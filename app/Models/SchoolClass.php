@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Unit extends Model
+class SchoolClass extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'unit_id'];
 
-    public function classes()
+    public function unit()
     {
-        return $this->hasMany(SchoolClass::class);
+        return $this->belongsTo(Unit::class);
     }
 }

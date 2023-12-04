@@ -6,8 +6,28 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import { reactive } from 'vue';
 
 const showingNavigationDropdown = ref(false);
+
+const routes = reactive([
+  {
+    name: 'Dashboard',
+    href: route('dashboard'),
+    active: route().current('dashboard'),
+  },
+  {
+    name: 'Daftar Unit',
+    href: route('units.index'),
+    active:
+      route().current('units.index') ||
+      route().current('units.create') ||
+      route().current('units.edit') ||
+      route().current('units.show') ||
+      route().current('units.school-classes.create') ||
+      route().current('units.school-classes.edit'),
+  },
+]);
 </script>
 
 <template>
@@ -32,17 +52,12 @@ const showingNavigationDropdown = ref(false);
               <!-- Navigation Links -->
               <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                 <NavLink
-                  :href="route('dashboard')"
-                  :active="route().current('dashboard')"
+                  v-for="route in routes"
+                  :key="route.href"
+                  :href="route.href"
+                  :active="route.active"
                 >
-                  Dashboard
-                </NavLink>
-
-                <NavLink
-                  :href="route('units.index')"
-                  :active="route().current('units.index')"
-                >
-                  Daftar Unit
+                  {{ route.name }}
                 </NavLink>
               </div>
             </div>
@@ -139,17 +154,12 @@ const showingNavigationDropdown = ref(false);
         >
           <div class="pt-2 pb-3 space-y-1">
             <ResponsiveNavLink
-              :href="route('dashboard')"
-              :active="route().current('dashboard')"
+              v-for="route in routes"
+              :key="route.href"
+              :href="route.href"
+              :active="route.active"
             >
-              Dashboard
-            </ResponsiveNavLink>
-
-            <ResponsiveNavLink
-              :href="route('units.index')"
-              :active="route().current('units.index')"
-            >
-              Daftar Unit
+              {{ route.name }}
             </ResponsiveNavLink>
           </div>
 

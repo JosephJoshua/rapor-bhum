@@ -35,8 +35,8 @@ class UnitController extends Controller
             'name' => ['required', 'max:255']
         ]);
 
-        Unit::create($validated);
-        return redirect()->route('units.index');
+        $unit = Unit::create($validated);
+        return redirect()->route('units.show', ['unit' => $unit]);
     }
 
     /**
@@ -44,7 +44,10 @@ class UnitController extends Controller
      */
     public function show(Unit $unit)
     {
-        //
+        return Inertia::render('Unit/Show', [
+            'data' => $unit,
+            'classes' => fn () => $unit->classes()->orderBy('name', 'asc')->get(),
+        ]);
     }
 
     /**
@@ -69,7 +72,7 @@ class UnitController extends Controller
         $unit->name = $validated['name'];
         $unit->save();
 
-        return redirect()->route('units.index');
+        return redirect()->route('units.show', ['unit' => $unit]);
     }
 
     /**

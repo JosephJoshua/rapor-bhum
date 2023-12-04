@@ -1,44 +1,78 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
 import { Unit } from '@/types/unit';
+import { SchoolClass } from '@/types/school-class';
+import { Head, Link, router } from '@inertiajs/vue3';
+import axios from 'axios';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DeleteButton from '@/Components/DeleteButton.vue';
-import axios from 'axios';
 
-defineProps<{
-  data: Array<Unit>;
+const props = defineProps<{
+  data: Unit;
+  classes: SchoolClass[];
 }>();
 
-const handleDelete = async (id: number) => {
-  await axios.delete(route('units.destroy', { unit: id }));
-  router.reload({ only: ['data'] });
+const handleDeleteClass = async (id: number) => {
+  await axios.delete(
+    route('units.school-classes.destroy', {
+      school_class: id,
+      unit: props.data.id,
+    }),
+  );
+  router.reload({ only: ['classes'] });
 };
 </script>
 
 <template>
-  <Head title="Daftar Unit" />
+  <Head :title="`Unit ${data.name}`" />
 
   <AuthenticatedLayout>
     <template #header>
-      <div class="flex items-center justify-between gap-4">
+      <div class="flex items-center gap-6">
+        <Link :href="route('units.index')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="transition-all duration-200 dark:text-gray-100 dark:hover:text-gray-400 hover:text-gray-700"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </Link>
+
         <h2
           class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
         >
-          Daftar Unit
+          Unit {{ data.name }}
         </h2>
-
-        <Link :href="route('units.create')">
-          <SecondaryButton>+ Tambah</SecondaryButton>
-        </Link>
       </div>
     </template>
 
     <div class="py-12">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div
-          class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg"
+          class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-6 py-4"
         >
+          <div class="flex items-center justify-between gap-4 mb-4">
+            <h3
+              class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
+            >
+              Daftar Kelas
+            </h3>
+
+            <Link
+              :href="route('units.school-classes.create', { unit: data.id })"
+            >
+              <SecondaryButton>+ Tambah</SecondaryButton>
+            </Link>
+          </div>
+
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <table
               class="w-full text-left rtl:text-right text-gray-500 dark:text-gray-400"
@@ -57,8 +91,8 @@ const handleDelete = async (id: number) => {
 
               <tbody>
                 <tr
-                  v-for="(unit, index) in data"
-                  :key="unit.id"
+                  v-for="(schoolClass, index) in classes"
+                  :key="schoolClass.id"
                   class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
                   <th
@@ -69,34 +103,32 @@ const handleDelete = async (id: number) => {
                   </th>
 
                   <td class="px-6 py-4 text-gray-900 dark:text-white">
-                    {{ unit.name }}
+                    {{ schoolClass.name }}
                   </td>
 
                   <td
                     class="px-6 py-4 text-right flex justify-end items-center gap-2"
                   >
                     <Link
-                      :href="route('units.show', { unit: unit.id })"
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Lihat
-                    </Link>
-
-                    <Link
-                      :href="route('units.edit', { unit: unit.id })"
+                      :href="
+                        route('units.school-classes.edit', {
+                          school_class: schoolClass.id,
+                          unit: data.id,
+                        })
+                      "
                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
                     >
                       Ubah
                     </Link>
 
                     <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus unit ${unit.name}?`"
-                      @delete="() => handleDelete(unit.id)"
+                      :prompt="`Apakah Anda yakin ingin menghapus kelas ${schoolClass.name}?`"
+                      @delete="() => handleDeleteClass(schoolClass.id)"
                     />
                   </td>
                 </tr>
 
-                <tr v-if="data.length === 0">
+                <tr v-if="classes.length === 0">
                   <td colspan="12">
                     <div class="flex justify-center items-center py-12 px-4">
                       Tidak dapat menemukan data
