@@ -37,6 +37,13 @@ const showingNavigationDropdown = ref(false);
                 >
                   Dashboard
                 </NavLink>
+
+                <NavLink
+                  :href="route('units.index')"
+                  :active="route().current('units.index')"
+                >
+                  Daftar Unit
+                </NavLink>
               </div>
             </div>
 
@@ -136,6 +143,13 @@ const showingNavigationDropdown = ref(false);
               :active="route().current('dashboard')"
             >
               Dashboard
+            </ResponsiveNavLink>
+
+            <ResponsiveNavLink
+              :href="route('units.index')"
+              :active="route().current('units.index')"
+            >
+              Daftar Unit
             </ResponsiveNavLink>
           </div>
 
