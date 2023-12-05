@@ -35,9 +35,13 @@ class SchoolClassController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SchoolClass $schoolClass)
+    public function show(Unit $unit, SchoolClass $schoolClass)
     {
-        //
+        return Inertia::render('SchoolClass/Show', [
+            'data' => $schoolClass,
+            'unit' => $unit,
+            'students' => fn () => $schoolClass->students()->get(),
+        ]);
     }
 
     /**

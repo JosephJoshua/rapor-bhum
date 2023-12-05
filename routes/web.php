@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolClassController;
+use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('units', UnitController::class);
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index']);
+    Route::resource('units.school-classes.students', StudentController::class)->except(['index']);
 });
 
 require __DIR__.'/auth.php';

@@ -1,35 +1,39 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Unit } from '@/types/unit';
-import { SchoolClass } from '@/types/school-class';
+import { Student } from '@/types/student';
 import { Head, Link, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DeleteButton from '@/Components/DeleteButton.vue';
+import { SchoolClass } from '@/types/school-class';
+import { Unit } from '@/types/unit';
 
 const props = defineProps<{
-  data: Unit;
-  classes: SchoolClass[];
+  data: SchoolClass;
+  unit: Unit;
+  students: Student[];
 }>();
 
-const handleDeleteClass = async (id: number) => {
+const handleDeleteStudent = async (id: number) => {
   await axios.delete(
-    route('units.school-classes.destroy', {
-      school_class: id,
-      unit: props.data.id,
+    route('units.school-classes.students.destroy', {
+      student: id,
+      school_class: props.data.id,
+      unit: props.unit.id,
     }),
   );
-  router.reload({ only: ['classes'] });
+
+  router.reload({ only: ['students'] });
 };
 </script>
 
 <template>
-  <Head :title="`Unit ${data.name}`" />
+  <Head :title="`Unit ${unit.name} | Kelas ${data.name}`" />
 
   <AuthenticatedLayout>
     <template #header>
       <div class="flex items-center gap-6">
-        <Link :href="route('units.index')">
+        <Link :href="route('units.show', { unit: unit.id })">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -49,7 +53,7 @@ const handleDeleteClass = async (id: number) => {
         <h2
           class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
         >
-          Unit {{ data.name }}
+          Unit {{ unit.name }} | Kelas {{ data.name }}
         </h2>
       </div>
     </template>
@@ -63,11 +67,16 @@ const handleDeleteClass = async (id: number) => {
             <h3
               class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
             >
-              Daftar Kelas
+              Daftar Murid
             </h3>
 
             <Link
-              :href="route('units.school-classes.create', { unit: data.id })"
+              :href="
+                route('units.school-classes.students.create', {
+                  school_class: data.id,
+                  unit: unit.id,
+                })
+              "
             >
               <SecondaryButton>+ Tambah</SecondaryButton>
             </Link>
@@ -91,8 +100,8 @@ const handleDeleteClass = async (id: number) => {
 
               <tbody>
                 <tr
-                  v-for="(schoolClass, index) in classes"
-                  :key="schoolClass.id"
+                  v-for="(student, index) in students"
+                  :key="student.id"
                   class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
                   <th
@@ -103,7 +112,7 @@ const handleDeleteClass = async (id: number) => {
                   </th>
 
                   <td class="px-6 py-4 text-gray-900 dark:text-white">
-                    {{ schoolClass.name }}
+                    {{ student.name }}
                   </td>
 
                   <td
@@ -111,21 +120,10 @@ const handleDeleteClass = async (id: number) => {
                   >
                     <Link
                       :href="
-                        route('units.school-classes.show', {
-                          school_class: schoolClass.id,
-                          unit: data.id,
-                        })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Lihat
-                    </Link>
-
-                    <Link
-                      :href="
-                        route('units.school-classes.edit', {
-                          school_class: schoolClass.id,
-                          unit: data.id,
+                        route('units.school-classes.students.edit', {
+                          school_class: data.id,
+                          student: student.id,
+                          unit: unit.id,
                         })
                       "
                       class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
@@ -134,13 +132,13 @@ const handleDeleteClass = async (id: number) => {
                     </Link>
 
                     <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus kelas ${schoolClass.name}?`"
-                      @delete="() => handleDeleteClass(schoolClass.id)"
+                      :prompt="`Apakah Anda yakin ingin menghapus murid ${student.name}?`"
+                      @delete="() => handleDeleteStudent(student.id)"
                     />
                   </td>
                 </tr>
 
-                <tr v-if="classes.length === 0">
+                <tr v-if="students.length === 0">
                   <td colspan="12">
                     <div class="flex justify-center items-center py-12 px-4">
                       Tidak dapat menemukan data
