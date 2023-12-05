@@ -5,29 +5,48 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import filterTruthy from '@/utils/filter-truthy';
+import { Link, usePage } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 
 const showingNavigationDropdown = ref(false);
 
-const routes = reactive([
-  {
-    name: 'Dashboard',
-    href: route('dashboard'),
-    active: route().current('dashboard'),
-  },
-  {
-    name: 'Daftar Unit',
-    href: route('units.index'),
-    active:
-      route().current('units.index') ||
-      route().current('units.create') ||
-      route().current('units.edit') ||
-      route().current('units.show') ||
-      route().current('units.school-classes.create') ||
-      route().current('units.school-classes.edit'),
-  },
-]);
+const {
+  props: { auth },
+} = usePage();
+
+const routes = reactive(
+  [
+    {
+      name: 'Dashboard',
+      href: route('dashboard'),
+      active: route().current('dashboard'),
+    },
+    auth.user.role === 'admin' && {
+      name: 'Daftar Unit',
+      href: route('units.index'),
+      active:
+        route().current('units.index') ||
+        route().current('units.create') ||
+        route().current('units.edit') ||
+        route().current('units.show') ||
+        route().current('units.school-classes.create') ||
+        route().current('units.school-classes.edit') ||
+        route().current('units.school-classes.show') ||
+        route().current('units.school-classes.students.create') ||
+        route().current('units.school-classes.students.edit'),
+    },
+    auth.user.role === 'teacher' && {
+      name: 'Daftar Kelas',
+      href: route('school-classes.index'),
+      active:
+        route().current('school-classes.index') ||
+        route().current('units.school-classes.show') ||
+        route().current('units.school-classes.students.create') ||
+        route().current('units.school-classes.students.edit'),
+    },
+  ].filter(filterTruthy),
+);
 </script>
 
 <template>

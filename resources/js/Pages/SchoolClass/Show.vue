@@ -12,6 +12,7 @@ const props = defineProps<{
   data: SchoolClass;
   unit: Unit;
   students: Student[];
+  shouldGoBackToSchoolClassIndex: boolean;
 }>();
 
 const handleDeleteStudent = async (id: number) => {
@@ -33,7 +34,13 @@ const handleDeleteStudent = async (id: number) => {
   <AuthenticatedLayout>
     <template #header>
       <div class="flex items-center gap-6">
-        <Link :href="route('units.show', { unit: unit.id })">
+        <Link
+          :href="
+            shouldGoBackToSchoolClassIndex
+              ? route('school-classes.index')
+              : route('units.show', { unit: unit.id })
+          "
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

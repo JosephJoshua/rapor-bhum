@@ -5,10 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\SchoolClass;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 
 class SchoolClassController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return Inertia::render('SchoolClass/Index', [
+            'data' => fn () =>
+                SchoolClass::with('unit')
+                    ->get()
+                    ->sortBy('unit.name')
+                    ->sortBy('name'),
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -41,6 +57,7 @@ class SchoolClassController extends Controller
             'data' => $schoolClass,
             'unit' => $unit,
             'students' => fn () => $schoolClass->students()->get(),
+            'shouldGoBackToSchoolClassIndex' => Auth::user()->role !== 'admin',
         ]);
     }
 

@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('units', UnitController::class);
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index']);
     Route::resource('units.school-classes.students', StudentController::class)->except(['index']);
+
+    Route::get('/school-classes', [SchoolClassController::class, 'index'])->name('school-classes.index');
 });
 
 require __DIR__.'/auth.php';
