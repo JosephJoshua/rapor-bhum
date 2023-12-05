@@ -1,26 +1,13 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import DeleteButton from '@/Components/DeleteButton.vue';
-import { SchoolClassWithUnit } from '@/types/school-class';
-import axios from 'axios';
+import { SchoolClass } from '@/types/school-class';
+import { WithOptionalTeacher } from '@/types/teacher';
+import { WithUnit } from '@/types/unit';
+import { Head, Link } from '@inertiajs/vue3';
 
-const props = defineProps<{
-  data: Array<SchoolClassWithUnit>;
+defineProps<{
+  data: WithOptionalTeacher<WithUnit<SchoolClass>>[];
 }>();
-
-console.table(props.data);
-
-const handleDelete = async (schoolClass: SchoolClassWithUnit) => {
-  await axios.delete(
-    route('units.school-classes.destroy', {
-      unit: schoolClass.unit.id,
-      school_class: schoolClass.id,
-    }),
-  );
-
-  router.reload({ only: ['data'] });
-};
 </script>
 
 <template>
@@ -51,6 +38,7 @@ const handleDelete = async (schoolClass: SchoolClassWithUnit) => {
                   <th scope="col" class="px-6 py-3 text-center">#</th>
                   <th scope="col" class="px-6 py-3">Unit</th>
                   <th scope="col" class="px-6 py-3">Nama</th>
+                  <th scope="col" class="px-6 py-3 text-center">Guru</th>
                   <th scope="col" class="px-6 py-3">
                     <span class="sr-only">Aksi</span>
                   </th>
@@ -76,6 +64,10 @@ const handleDelete = async (schoolClass: SchoolClassWithUnit) => {
 
                   <td class="px-6 py-4 text-gray-900 dark:text-white">
                     {{ schoolClass.name }}
+                  </td>
+
+                  <td class="px-6 py-4 text-center">
+                    {{ schoolClass.teacher?.name ?? '-' }}
                   </td>
 
                   <td

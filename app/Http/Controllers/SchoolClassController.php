@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SchoolClass;
 use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
@@ -19,6 +20,7 @@ class SchoolClassController extends Controller
         return Inertia::render('SchoolClass/Index', [
             'data' => fn () =>
                 SchoolClass::with('unit')
+                    ->with('teacher')
                     ->get()
                     ->sortBy('unit.name')
                     ->sortBy('name'),
@@ -85,6 +87,29 @@ class SchoolClassController extends Controller
         $schoolClass->save();
 
         return redirect()->route('units.show', ['unit' => $unit]);
+    }
+
+    public function updateTeacher(Request $request, Unit $unit, SchoolClass $schoolClass)
+    {
+        $validated = $request->validate([
+            'teacher_id' => ['nullable', 'exists:users,id'],
+        ]);
+
+        if (!isset($validated['teacher_id']))
+        {
+            $schoolClass->teacher_user_id = null;
+            $schoolClass->save();
+
+            return;
+        }
+
+        if (User::find($validated['teacher_id'])->role !== 'teacher')
+        {
+            return redirect()->back()->withErrors(['teacher_id' => 'The selected teacher is not a teacher.']);
+        }
+
+        $schoolClass->teacher_user_id = $validated['teacher_id'];
+        $schoolClass->save();
     }
 
     /**

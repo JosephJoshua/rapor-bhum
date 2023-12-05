@@ -7,7 +7,7 @@ import DeleteButton from '@/Components/DeleteButton.vue';
 import axios from 'axios';
 
 defineProps<{
-  data: Array<Unit>;
+  data: Unit[];
 }>();
 
 const handleDelete = async (id: number) => {

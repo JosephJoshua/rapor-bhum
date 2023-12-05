@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unit;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -46,7 +47,8 @@ class UnitController extends Controller
     {
         return Inertia::render('Unit/Show', [
             'data' => $unit,
-            'classes' => fn () => $unit->classes()->orderBy('name', 'asc')->get(),
+            'classes' => fn () => $unit->classes()->with('teacher')->orderBy('name', 'asc')->get(),
+            'teachers' => fn () => User::where('role', '=', 'teacher')->orderBy('name', 'asc')->get(),
         ]);
     }
 

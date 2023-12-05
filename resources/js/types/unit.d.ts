@@ -4,3 +4,7 @@ export type Unit = {
   created_at: Date;
   updated_at: Date;
 };
+
+export type WithUnit<T> = T & {
+  unit: Unit;
+};

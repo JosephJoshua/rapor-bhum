@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::put('/units/{unit}/school-classes/{school_class}/teacher', [SchoolClassController::class, 'updateTeacher'])->name('units.school-classes.update-teacher');
+
     Route::resource('units', UnitController::class);
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index']);
     Route::resource('units.school-classes.students', StudentController::class)->except(['index']);

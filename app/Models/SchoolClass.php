@@ -9,11 +9,16 @@ class SchoolClass extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'unit_id'];
+    protected $fillable = ['name', 'unit_id', 'teacher_user_id'];
 
     public function unit()
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function teacher()
+    {
+        return $this->belongsTo(User::class, 'teacher_user_id');
     }
 
     public function students()
