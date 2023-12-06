@@ -35,7 +35,7 @@ class StudentController extends Controller
     public function store(Request $request, Unit $unit, SchoolClass $schoolClass)
     {
         $validated = $request->validate([
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         $schoolClass->students()->create($validated);
@@ -68,7 +68,7 @@ class StudentController extends Controller
     public function update(Request $request, Unit $unit, SchoolClass $schoolClass, Student $student)
     {
         $validated = $request->validate([
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         $student->name = $validated['name'];

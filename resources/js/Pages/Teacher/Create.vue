@@ -1,0 +1,135 @@
+<script setup lang="ts">
+import InputError from '@/Components/InputError.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import TextInput from '@/Components/TextInput.vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, Link, useForm } from '@inertiajs/vue3';
+
+const form = useForm({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+});
+
+const submit = () => {
+  form.post(route('teachers.store'));
+};
+</script>
+
+<template>
+  <Head title="Tambah Guru" />
+
+  <AuthenticatedLayout>
+    <template #header>
+      <div class="flex items-center gap-6">
+        <Link :href="route('teachers.index')">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="transition-all duration-200 dark:text-gray-100 dark:hover:text-gray-400 hover:text-gray-700"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </Link>
+
+        <h2
+          class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
+        >
+          Tambah Guru
+        </h2>
+      </div>
+    </template>
+
+    <div class="py-12">
+      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div
+          class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-6 py-4"
+        >
+          <form @submit.prevent="submit">
+            <div>
+              <InputLabel for="name" value="Nama Guru" />
+
+              <TextInput
+                id="name"
+                v-model="form.name"
+                type="text"
+                class="mt-1 block w-full"
+                required
+                autofocus
+              />
+
+              <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="email" value="E-mail" />
+
+              <TextInput
+                id="email"
+                v-model="form.email"
+                type="email"
+                class="mt-1 block w-full"
+                required
+              />
+
+              <InputError class="mt-2" :message="form.errors.email" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="password" value="Password" />
+
+              <TextInput
+                id="password"
+                v-model="form.password"
+                type="password"
+                class="mt-1 block w-full"
+                required
+              />
+
+              <InputError class="mt-2" :message="form.errors.password" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel
+                for="password_confirmation"
+                value="Konfirmasi Password"
+              />
+
+              <TextInput
+                id="password_confirmation"
+                v-model="form.password_confirmation"
+                type="password"
+                class="mt-1 block w-full"
+                required
+              />
+
+              <InputError
+                class="mt-2"
+                :message="form.errors.password_confirmation"
+              />
+            </div>
+
+            <div class="flex items-center justify-end mt-4">
+              <PrimaryButton
+                class="ms-4"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+              >
+                + Tambah
+              </PrimaryButton>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </AuthenticatedLayout>
+</template>

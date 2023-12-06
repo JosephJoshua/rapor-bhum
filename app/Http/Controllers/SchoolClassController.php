@@ -43,7 +43,7 @@ class SchoolClassController extends Controller
     public function store(Request $request, Unit $unit)
     {
         $validated = $request->validate([
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         $unit->classes()->create($validated);
@@ -80,7 +80,7 @@ class SchoolClassController extends Controller
     public function update(Request $request, Unit $unit, SchoolClass $schoolClass)
     {
         $validated = $request->validate([
-            'name' => ['required', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
 
         $schoolClass->name = $validated['name'];

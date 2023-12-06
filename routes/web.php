@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/school-classes', [SchoolClassController::class, 'index'])->name('school-classes.index');
     Route::put('/units/{unit}/school-classes/{school_class}/teacher', [SchoolClassController::class, 'updateTeacher'])->name('units.school-classes.update-teacher')->middleware('can:manage-classes');
 
+    Route::resource('teachers', TeacherController::class)->middleware('can:manage-teachers');
     Route::resource('units', UnitController::class)->middleware('can:manage-classes');
 
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index', 'show'])->middleware('can:manage-classes');
