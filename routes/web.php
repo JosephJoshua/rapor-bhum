@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GradeDescriptorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
@@ -40,8 +41,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/school-classes', [SchoolClassController::class, 'index'])->name('school-classes.index');
     Route::put('/units/{unit}/school-classes/{school_class}/teacher', [SchoolClassController::class, 'updateTeacher'])->name('units.school-classes.update-teacher')->middleware('can:manage-classes');
 
-    Route::resource('teachers', TeacherController::class)->middleware('can:manage-teachers');
-    Route::resource('units', UnitController::class)->middleware('can:manage-classes');
+    Route::resource('teachers', TeacherController::class)->except(['show'])->middleware('can:manage-teachers');
+    Route::resource('units', UnitController::class)->middleware('can:manage-units');
+    Route::resource('grade-descriptors', GradeDescriptorController::class)->except(['show'])->middleware('can:manage-grade-descriptors');
 
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index', 'show'])->middleware('can:manage-classes');
     Route::resource('units.school-classes', SchoolClassController::class)->only(['show']);

@@ -28,6 +28,11 @@ const routes = reactive(
       active: route().current('teachers.index'),
     },
     auth.user.role === 'admin' && {
+      name: 'Daftar Predikat',
+      href: route('grade-descriptors.index'),
+      active: route().current('grade-descriptors.index'),
+    },
+    auth.user.role === 'admin' && {
       name: 'Daftar Unit',
       href: route('units.index'),
       active:
