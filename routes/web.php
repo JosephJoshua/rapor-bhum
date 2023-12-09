@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\GradeDescriptorController;
+use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentSubIndicatorController;
+use App\Http\Controllers\SubIndicatorController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
@@ -22,11 +25,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -44,6 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('teachers', TeacherController::class)->except(['show'])->middleware('can:manage-teachers');
     Route::resource('units', UnitController::class)->middleware('can:manage-units');
     Route::resource('grade-descriptors', GradeDescriptorController::class)->except(['show'])->middleware('can:manage-grade-descriptors');
+
+    Route::resource('indicators', IndicatorController::class)->middleware('can:manage-indicators');
+    Route::resource('indicators.subindicators', SubIndicatorController::class)->except(['index'])->middleware('can:manage-indicators');
+
+    Route::post('/students/{student}/subindicators/{subindicator}', [StudentSubIndicatorController::class, 'store'])->name('students.subindicators.store');
+    Route::delete('/students/{student}/subindicators/{subindicator}', [StudentSubIndicatorController::class, 'destroy'])->name('students.subindicators.destroy');
 
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index', 'show'])->middleware('can:manage-classes');
     Route::resource('units.school-classes', SchoolClassController::class)->only(['show']);

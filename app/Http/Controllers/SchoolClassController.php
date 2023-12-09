@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Indicator;
 use App\Models\SchoolClass;
 use App\Models\Unit;
 use App\Models\User;
@@ -58,7 +59,8 @@ class SchoolClassController extends Controller
         return Inertia::render('SchoolClass/Show', [
             'data' => $schoolClass,
             'unit' => $unit,
-            'students' => fn () => $schoolClass->students()->get(),
+            'students' => fn () => $schoolClass->students()->with('subindicators')->get(),
+            'indicators' => fn () => Indicator::with('subindicators')->orderBy('name', 'asc')->get(),
             'shouldGoBackToSchoolClassIndex' => Auth::user()->role !== 'admin',
         ]);
     }

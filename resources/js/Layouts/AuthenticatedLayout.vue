@@ -32,6 +32,17 @@ const routes = reactive(
       href: route('grade-descriptors.index'),
       active: route().current('grade-descriptors.index'),
     },
+    {
+      name: 'Daftar Indikator',
+      href: route('indicators.index'),
+      active:
+        route().current('indicators.index') ||
+        route().current('indicators.create') ||
+        route().current('indicators.edit') ||
+        route().current('indicators.show') ||
+        route().current('indicators.subindicators.create') ||
+        route().current('indicators.subindicators.edit'),
+    },
     auth.user.role === 'admin' && {
       name: 'Daftar Unit',
       href: route('units.index'),

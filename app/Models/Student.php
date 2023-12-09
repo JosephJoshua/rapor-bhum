@@ -15,4 +15,9 @@ class Student extends Model
     {
         return $this->belongsTo(SchoolClass::class);
     }
+
+    public function subindicators()
+    {
+        return $this->belongsToMany(SubIndicator::class, 'student_sub_indicators');
+    }
 }

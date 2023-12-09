@@ -40,12 +40,7 @@ class GradeDescriptorController extends Controller
             'max_grade' => ['required', 'integer', 'min:1', 'gte:min_grade'],
         ]);
 
-        GradeDescriptor::create([
-            'name' => $validated['name'],
-            'min_grade' => $validated['min_grade'],
-            'max_grade' => $validated['max_grade'],
-        ]);
-
+        GradeDescriptor::create($validated);
         return redirect()->route('grade-descriptors.index');
     }
 
