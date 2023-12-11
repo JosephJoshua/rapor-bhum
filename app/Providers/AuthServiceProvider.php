@@ -43,5 +43,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-indicators', function (User $user) {
             return $user->role === 'admin';
         });
+
+        Gate::define('manage-academic-terms', function (User $user) {
+            return $user->role === 'admin';
+        });
     }
 }

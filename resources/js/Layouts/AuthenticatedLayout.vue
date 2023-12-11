@@ -23,9 +23,21 @@ const routes = reactive(
       active: route().current('dashboard'),
     },
     auth.user.role === 'admin' && {
+      name: 'Daftar Semester',
+      href: route('academic-terms.index'),
+      active:
+        route().current('academic-terms.index') ||
+        route().current('academic-terms.create') ||
+        route().current('academic-terms.edit'),
+    },
+    auth.user.role === 'admin' && {
       name: 'Daftar Guru',
       href: route('teachers.index'),
-      active: route().current('teachers.index'),
+      active:
+        route().current('teachers.index') ||
+        route().current('teachers.create') ||
+        route().current('teachers.edit') ||
+        route().current('teachers.show'),
     },
     auth.user.role === 'admin' && {
       name: 'Daftar Predikat',

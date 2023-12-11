@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicTermController;
 use App\Http\Controllers\GradeDescriptorController;
 use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\ProfileController;
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('units.school-classes', SchoolClassController::class)->only(['show']);
 
     Route::resource('units.school-classes.students', StudentController::class)->except(['index']);
+
+    Route::resource('academic-terms', AcademicTermController::class)->except(['show'])->middleware('can:manage-academic-terms');
 });
 
 require __DIR__.'/auth.php';
