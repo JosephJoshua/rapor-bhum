@@ -59,9 +59,15 @@ class SchoolClassController extends Controller
         return Inertia::render('SchoolClass/Show', [
             'data' => $schoolClass,
             'unit' => $unit,
-            'students' => fn () => $schoolClass->students()->with('subindicators')->get(),
+            'students' => fn () =>
+                $schoolClass
+                    ->students()
+                    ->with('subindicators')
+                    ->get()
+                    ->each(function ($student) {
+                        $student->grade_descriptors = $student->gradeDescriptors();
+                    }),
             'indicators' => fn () => Indicator::with('subindicators')->orderBy('name', 'asc')->get(),
-            'shouldGoBackToSchoolClassIndex' => Auth::user()->role !== 'admin',
         ]);
     }
 

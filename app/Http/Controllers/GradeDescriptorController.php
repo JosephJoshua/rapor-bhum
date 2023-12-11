@@ -18,6 +18,7 @@ class GradeDescriptorController extends Controller
                 GradeDescriptor::orderBy('min_grade', 'asc')
                     ->orderBy('max_grade', 'asc')
                     ->get(),
+            'max_grade' => fn () => GradeDescriptor::max('max_grade'),
         ]);
     }
 
@@ -36,8 +37,8 @@ class GradeDescriptorController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:grade_descriptors'],
-            'min_grade' => ['required', 'integer', 'min:1', 'unique:grade_descriptors'],
-            'max_grade' => ['required', 'integer', 'min:1', 'gte:min_grade'],
+            'min_grade' => ['required', 'integer', 'min:0', 'unique:grade_descriptors'],
+            'max_grade' => ['required', 'integer', 'min:0', 'gte:min_grade'],
         ]);
 
         GradeDescriptor::create($validated);
@@ -61,8 +62,8 @@ class GradeDescriptorController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255', 'unique:grade_descriptors,name,' . $gradeDescriptor->id],
-            'min_grade' => ['required', 'integer', 'min:1', 'unique:grade_descriptors,min_grade,' . $gradeDescriptor->min_grade],
-            'max_grade' => ['required', 'integer', 'min:1', 'gte:min_grade'],
+            'min_grade' => ['required', 'integer', 'min:0', 'unique:grade_descriptors,min_grade,' . $gradeDescriptor->id],
+            'max_grade' => ['required', 'integer', 'min:0', 'gte:min_grade'],
         ]);
 
         $gradeDescriptor->name = $validated['name'];

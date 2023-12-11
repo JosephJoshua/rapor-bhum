@@ -10,14 +10,14 @@ import { Unit } from '@/types/unit';
 import Popper from 'vue3-popper';
 import { Indicator } from '@/types/indicator';
 import { WithSubIndicators } from '@/types/subindicator';
-import { ref, computed } from 'vue';
+import { WithIndicatorGradeDescriptors } from '@/types/grade-descriptor';
+import { ref, computed, watch } from 'vue';
 
 const props = defineProps<{
   data: SchoolClass;
   unit: Unit;
-  students: WithSubIndicators<Student>[];
+  students: WithIndicatorGradeDescriptors<WithSubIndicators<Student>>[];
   indicators: WithSubIndicators<Indicator>[];
-  shouldGoBackToSchoolClassIndex: boolean;
 }>();
 
 const isLoadingToastOpen = ref(false);
@@ -30,11 +30,42 @@ const closeLoadingToast = () => {
   isLoadingToastOpen.value = false;
 };
 
-const indicatorIdsToShow = ref<Set<number>>(new Set());
+const INDICATOR_IDS_TO_SHOW_STORAGE_KEY = 'indicator-ids-to-show';
+
+const indicatorIdsToShow = ref<Set<number>>(
+  (() => {
+    const storedValue = localStorage.getItem(INDICATOR_IDS_TO_SHOW_STORAGE_KEY);
+
+    if (storedValue === null) {
+      return new Set<number>();
+    }
+
+    const parsed = JSON.parse(storedValue);
+    if (!Array.isArray(parsed)) {
+      return new Set<number>();
+    }
+
+    const filtered = parsed.filter((el) => {
+      return (
+        props.indicators.find((indicator) => indicator.id === el) !== undefined
+      );
+    }) as number[];
+
+    return new Set<number>(filtered);
+  })(),
+);
+
 const indicatorsToShow = computed(() => {
   return props.indicators.filter((indicator) => {
     return indicatorIdsToShow.value.has(indicator.id);
   });
+});
+
+watch(indicatorIdsToShow, () => {
+  localStorage.setItem(
+    INDICATOR_IDS_TO_SHOW_STORAGE_KEY,
+    JSON.stringify(Array.from(indicatorIdsToShow.value)),
+  );
 });
 
 const toggleIndicatorVisibility = (id: number, visibility: boolean) => {
@@ -43,12 +74,17 @@ const toggleIndicatorVisibility = (id: number, visibility: boolean) => {
   } else {
     indicatorIdsToShow.value.delete(id);
   }
+
+  localStorage.setItem(
+    INDICATOR_IDS_TO_SHOW_STORAGE_KEY,
+    JSON.stringify(Array.from(indicatorIdsToShow.value)),
+  );
 };
 
 let studentSubindicatorPromises: Promise<void>[] = [];
 let studentSubindicatorStartTime: Date | null = null;
 
-const loadingToastMinimumOpenTimeMs = 500;
+const LOADING_TOAST_MINIMUM_OPEN_TIME_MS = 500;
 
 const toggleStudentSubindicator = async (
   studentId: number,
@@ -93,8 +129,8 @@ const toggleStudentSubindicator = async (
         studentSubindicatorStartTime = null;
       };
 
-      if (elapsedMs <= loadingToastMinimumOpenTimeMs) {
-        setTimeout(close, loadingToastMinimumOpenTimeMs - elapsedMs);
+      if (elapsedMs <= LOADING_TOAST_MINIMUM_OPEN_TIME_MS) {
+        setTimeout(close, LOADING_TOAST_MINIMUM_OPEN_TIME_MS - elapsedMs);
       } else {
         close();
       }
@@ -125,7 +161,7 @@ const handleDeleteStudent = async (id: number) => {
       <div class="flex items-center gap-6">
         <Link
           :href="
-            shouldGoBackToSchoolClassIndex
+            $page.props.auth.user.role === 'teacher'
               ? route('school-classes.index')
               : route('units.show', { unit: unit.id })
           "
@@ -231,6 +267,7 @@ const handleDeleteStudent = async (id: number) => {
                       >
                         <input
                           :id="`indicator-${indicator.id}`"
+                          :checked="indicatorIdsToShow.has(indicator.id)"
                           type="checkbox"
                           class="cursor-pointer w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           @change="
@@ -276,7 +313,7 @@ const handleDeleteStudent = async (id: number) => {
                   <th
                     v-for="indicator in indicatorsToShow"
                     :key="indicator.id"
-                    :colspan="indicator.subindicators.length"
+                    :colspan="indicator.subindicators.length + 1"
                     scope="colgroup"
                     class="px-6 pt-3 pb-1 text-center"
                   >
@@ -289,14 +326,21 @@ const handleDeleteStudent = async (id: number) => {
                 </tr>
 
                 <tr scope="col">
-                  <template v-for="indicator in indicatorsToShow">
+                  <template
+                    v-for="indicator in indicatorsToShow"
+                    :key="indicator.id"
+                  >
                     <th
                       v-for="subindicator in indicator.subindicators"
                       :key="subindicator.id"
                       scope="col"
-                      class="px-6 pt-1 pb-3 text-center"
+                      class="px-6 pt-1 pb-3 text-center whitespace-nowrap"
                     >
                       {{ subindicator.name }}
+                    </th>
+
+                    <th scope="col" class="px-6 pt-1 pb-3 text-center">
+                      Predikat
                     </th>
                   </template>
                 </tr>
@@ -315,21 +359,20 @@ const handleDeleteStudent = async (id: number) => {
                     {{ index + 1 }}
                   </th>
 
-                  <td class="px-6 py-4 text-gray-900 dark:text-white">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"
+                  >
                     {{ student.name }}
                   </td>
 
-                  <template v-for="(indicator, idx1) in indicatorsToShow">
+                  <template
+                    v-for="(indicator, idx) in indicatorsToShow"
+                    :key="indicator.id"
+                  >
                     <td
-                      v-for="(subindicator, idx2) in indicator.subindicators"
+                      v-for="subindicator in indicator.subindicators"
                       :key="subindicator.id"
-                      :class="[
-                        idx1 < indicatorsToShow.length - 1 ||
-                        idx2 < indicator.subindicators.length - 1
-                          ? 'border-r dark:border-gray-700'
-                          : '',
-                        'text-center',
-                      ]"
+                      class="border-r dark:border-gray-700 text-center"
                       scope="col"
                     >
                       <input
@@ -349,6 +392,22 @@ const handleDeleteStudent = async (id: number) => {
                             )
                         "
                       />
+                    </td>
+
+                    <td
+                      scope="col"
+                      :class="[
+                        idx < indicatorsToShow.length - 1
+                          ? 'border-r dark:border-gray-700'
+                          : '',
+                        'text-center text-sm whitespace-nowrap text-gray-900 dark:text-white px-8 py-4',
+                      ]"
+                    >
+                      {{
+                        student.grade_descriptors.find(
+                          (el) => el.indicator.id === indicator.id,
+                        )?.grade_descriptor?.name ?? '-'
+                      }}
                     </td>
                   </template>
 
