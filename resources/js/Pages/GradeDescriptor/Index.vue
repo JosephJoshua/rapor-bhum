@@ -13,6 +13,14 @@ const props = defineProps<{
   max_grade: number;
 }>();
 
+const gradeToPercentage = (grade: number) => {
+  if (props.max_grade === 0 && grade === 0) {
+    return 100;
+  }
+
+  return Math.round((grade / props.max_grade) * 100 * 100) / 100;
+};
+
 const handleDelete = async (id: number) => {
   await axios.delete(
     route('grade-descriptors.destroy', { grade_descriptor: id }),
@@ -46,9 +54,9 @@ const handleDelete = async (id: number) => {
           class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-6 py-4"
         >
           <div class="flex items-center justify-between gap-4 mb-4">
-            <span class="font-semibold text-gray-800 dark:text-gray-200"
-              >Skala dari 0 sampai {{ max_grade }}</span
-            >
+            <span class="font-semibold text-gray-800 dark:text-gray-200">
+              Skala dari 0 sampai {{ max_grade }}
+            </span>
           </div>
 
           <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -61,6 +69,7 @@ const handleDelete = async (id: number) => {
                 <tr>
                   <th scope="col" class="px-6 py-3 text-center">#</th>
                   <th scope="col" class="px-6 py-3">Nama</th>
+                  <th scope="col" class="px-6 py-3">Kode</th>
                   <th scope="col" class="px-6 py-3 text-center">
                     Skor Minimum
                   </th>
@@ -91,6 +100,10 @@ const handleDelete = async (id: number) => {
                     {{ gradeDescriptor.name }}
                   </td>
 
+                  <td class="px-6 py-4 text-gray-900 dark:text-white">
+                    {{ gradeDescriptor.code }}
+                  </td>
+
                   <td class="px-6 py-4 text-center">
                     {{ gradeDescriptor.min_grade }}
                   </td>
@@ -100,16 +113,8 @@ const handleDelete = async (id: number) => {
                   </td>
 
                   <td class="px-6 py-4 text-center">
-                    {{
-                      Math.round(
-                        (gradeDescriptor.min_grade / max_grade) * 100 * 100,
-                      ) / 100
-                    }}% -
-                    {{
-                      Math.round(
-                        (gradeDescriptor.max_grade / max_grade) * 100 * 100,
-                      ) / 100
-                    }}%
+                    {{ gradeToPercentage(gradeDescriptor.min_grade) }}% -
+                    {{ gradeToPercentage(gradeDescriptor.max_grade) }}%
                   </td>
 
                   <td

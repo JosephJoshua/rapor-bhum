@@ -406,7 +406,7 @@ const handleDeleteStudent = async (id: number) => {
                       {{
                         student.grade_descriptors.find(
                           (el) => el.indicator.id === indicator.id,
-                        )?.grade_descriptor?.name ?? '-'
+                        )?.grade_descriptor?.code ?? '-'
                       }}
                     </td>
                   </template>

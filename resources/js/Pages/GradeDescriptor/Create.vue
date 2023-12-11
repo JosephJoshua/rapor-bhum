@@ -8,6 +8,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
   name: '',
+  code: '',
   min_grade: 0,
   max_grade: 0,
 });
@@ -67,6 +68,20 @@ const submit = () => {
               />
 
               <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="code" value="Kode Predikat" />
+
+              <TextInput
+                id="code"
+                v-model="form.code"
+                type="text"
+                class="mt-1 block w-full"
+                required
+              />
+
+              <InputError class="mt-2" :message="form.errors.code" />
             </div>
 
             <div class="mt-4">

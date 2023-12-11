@@ -3,6 +3,7 @@ import { Indicator } from './indicator';
 export type GradeDescriptor = {
   id: number;
   name: string;
+  code: string;
   min_grade: number;
   max_grade: number;
   created_at: Date;
