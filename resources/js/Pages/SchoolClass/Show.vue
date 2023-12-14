@@ -12,13 +12,20 @@ import { Indicator } from '@/types/indicator';
 import { WithSubIndicators } from '@/types/subindicator';
 import { WithIndicatorGradeDescriptors } from '@/types/grade-descriptor';
 import { ref, computed, watch } from 'vue';
+import { AcademicTerm } from '@/types/academic-term';
+import { formatEntireTerm } from '@/utils/format-term';
 
 const props = defineProps<{
   data: SchoolClass;
   unit: Unit;
   students: WithIndicatorGradeDescriptors<WithSubIndicators<Student>>[];
   indicators: WithSubIndicators<Indicator>[];
+
+  // eslint-disable-next-line vue/prop-name-casing
+  academic_terms: AcademicTerm[];
 }>();
+
+console.log(props.students);
 
 const isLoadingToastOpen = ref(false);
 
@@ -31,6 +38,22 @@ const closeLoadingToast = () => {
 };
 
 const INDICATOR_IDS_TO_SHOW_STORAGE_KEY = 'indicator-ids-to-show';
+const SELECTED_TERM_ID_STORAGE_KEY = 'selected-term-id';
+
+const selectedTermId = ref<number | null>(
+  (() => {
+    const storedValue = localStorage.getItem(SELECTED_TERM_ID_STORAGE_KEY);
+
+    if (storedValue === null) {
+      return null;
+    }
+
+    const parsed = JSON.parse(storedValue);
+    const got = props.academic_terms.find((term) => term.id === parsed)?.id;
+
+    return got ?? null;
+  })(),
+);
 
 const indicatorIdsToShow = ref<Set<number>>(
   (() => {
@@ -61,12 +84,38 @@ const indicatorsToShow = computed(() => {
   });
 });
 
+const selectedTerm = computed(() => {
+  return (
+    props.academic_terms.find((term) => term.id === selectedTermId.value) ??
+    null
+  );
+});
+
 watch(indicatorIdsToShow, () => {
   localStorage.setItem(
     INDICATOR_IDS_TO_SHOW_STORAGE_KEY,
     JSON.stringify(Array.from(indicatorIdsToShow.value)),
   );
 });
+
+watch(
+  selectedTermId,
+  () => {
+    localStorage.setItem(
+      SELECTED_TERM_ID_STORAGE_KEY,
+      JSON.stringify(selectedTermId.value),
+    );
+
+    router.reload({
+      only: ['students'],
+      data: {
+        academic_term_id: selectedTermId.value,
+      },
+      replace: true,
+    });
+  },
+  { immediate: true },
+);
 
 const toggleIndicatorVisibility = (id: number, visibility: boolean) => {
   if (visibility) {
@@ -81,6 +130,10 @@ const toggleIndicatorVisibility = (id: number, visibility: boolean) => {
   );
 };
 
+const selectTerm = (id: number) => {
+  selectedTermId.value = id;
+};
+
 let studentSubindicatorPromises: Promise<void>[] = [];
 let studentSubindicatorStartTime: Date | null = null;
 
@@ -91,6 +144,10 @@ const toggleStudentSubindicator = async (
   subindicatorId: number,
   checked: boolean,
 ) => {
+  if (selectedTermId.value === null) {
+    return;
+  }
+
   openLoadingToast();
 
   if (studentSubindicatorStartTime === null) {
@@ -99,15 +156,20 @@ const toggleStudentSubindicator = async (
 
   const data = {
     student: studentId,
+    academic_term: selectedTermId.value,
     subindicator: subindicatorId,
   };
 
   let promise: Promise<void>;
 
   if (checked) {
-    promise = axios.post(route('students.subindicators.store', data));
+    promise = axios.post(
+      route('academic-terms.students.subindicators.store', data),
+    );
   } else {
-    promise = axios.delete(route('students.subindicators.destroy', data));
+    promise = axios.delete(
+      route('academic-terms.students.subindicators.destroy', data),
+    );
   }
 
   studentSubindicatorPromises.push(promise);
@@ -214,7 +276,99 @@ const handleDeleteStudent = async (id: number) => {
             </Link>
           </div>
 
-          <div class="mb-4">
+          <div class="mb-4 flex items-center gap-4">
+            <Popper arrow>
+              <button
+                class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                type="button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-3 h-3 mr-2"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+
+                {{
+                  selectedTerm === null
+                    ? 'Pilih Semester'
+                    : formatEntireTerm(
+                        selectedTerm.start_year,
+                        selectedTerm.end_year,
+                        selectedTerm.term,
+                      )
+                }}
+
+                <svg
+                  class="w-2.5 h-2.5 ml-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 10 6"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 4 4 4-4"
+                  />
+                </svg>
+              </button>
+
+              <template #content>
+                <div
+                  class="w-56 bg-white divide-gray-100 rounded-lg shadow-lg dark:bg-gray-700 dark:divide-gray-600"
+                >
+                  <ul
+                    class="max-h-64 px-3 py-4 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                  >
+                    <li v-for="term in academic_terms" :key="term.id">
+                      <div
+                        class="cursor-pointer flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600"
+                      >
+                        <input
+                          :id="`academic-term-${term.id}`"
+                          :checked="selectedTermId === term.id"
+                          type="radio"
+                          class="cursor-pointer -4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                          @change="() => selectTerm(term.id)"
+                        />
+
+                        <label
+                          :for="`academic-term-${term.id}`"
+                          class="cursor-pointer w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
+                        >
+                          {{
+                            formatEntireTerm(
+                              term.start_year,
+                              term.end_year,
+                              term.term,
+                            )
+                          }}
+                        </label>
+                      </div>
+
+                      <div v-if="academic_terms.length === 0">
+                        Tidak dapat menemukan data
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </template>
+            </Popper>
+
             <Popper arrow>
               <button
                 class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
@@ -377,10 +531,11 @@ const handleDeleteStudent = async (id: number) => {
                     >
                       <input
                         :checked="
-                          student.subindicators.find(
+                          student.subindicators?.find(
                             (s) => s.id === subindicator.id,
                           ) !== undefined
                         "
+                        :disabled="selectedTermId === null"
                         type="checkbox"
                         class="cursor-pointer w-6 h-6 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                         @change="

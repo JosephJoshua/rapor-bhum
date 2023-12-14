@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicTerm;
 use App\Models\Indicator;
 use App\Models\SchoolClass;
 use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 
 class SchoolClassController extends Controller
@@ -54,20 +53,45 @@ class SchoolClassController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Unit $unit, SchoolClass $schoolClass)
+    public function show(Request $request, Unit $unit, SchoolClass $schoolClass)
     {
+        $request->query('academic_term_id') === null
+            ? $academicTerm = null
+            : $academicTerm = AcademicTerm::find($request->query('academic_term_id'));
+
         return Inertia::render('SchoolClass/Show', [
             'data' => $schoolClass,
             'unit' => $unit,
             'students' => fn () =>
                 $schoolClass
                     ->students()
-                    ->with('subindicators')
+                    ->with([
+                        'studentSubIndicators' => function ($query) use ($academicTerm) {
+                            if ($academicTerm === null) return;
+                            $query->where('academic_term_id', '=', $academicTerm->id);
+                        },
+                        'studentSubIndicators.subIndicator',
+                    ])
                     ->get()
-                    ->each(function ($student) {
-                        $student->grade_descriptors = $student->gradeDescriptors();
+                    ->each(function ($student) use ($academicTerm) {
+                        $student->subindicators = $student
+                            ->studentSubIndicators
+                            ->map(fn ($el) => $el->subIndicator);
+
+                        $student->grade_descriptors =
+                            $academicTerm === null
+                                ? []
+                                : $student->gradeDescriptors($academicTerm);
                     }),
-            'indicators' => fn () => Indicator::with('subindicators')->orderBy('name', 'asc')->get(),
+            'indicators' => fn () =>
+                Indicator::with('subindicators')
+                    ->orderBy('name', 'asc')
+                    ->get(),
+            'academic_terms' => fn () =>
+                AcademicTerm::orderBy('start_year', 'desc')
+                    ->orderBy('end_year', 'desc')
+                    ->orderBy('term', 'desc')
+                    ->get(),
         ]);
     }
 

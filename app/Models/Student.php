@@ -22,14 +22,30 @@ class Student extends Model
         return $this->belongsToMany(SubIndicator::class, 'student_sub_indicators');
     }
 
-    public function gradeDescriptors()
+    public function academicTerms()
+    {
+        return $this->belongsToMany(AcademicTerm::class, 'student_sub_indicators');
+    }
+
+    public function studentSubIndicators()
+    {
+        return $this->hasMany(StudentSubIndicator::class);
+    }
+
+    public function gradeDescriptors(AcademicTerm $term)
     {
         // can do this with a single query, but it's not worth the effort
         $max = GradeDescriptor::max('max_grade');
 
-        return Indicator::all()->map(function ($indicator) use ($max) {
-            $count = $this->subindicators()->where('indicator_id', $indicator->id)->count();
-            $total = $indicator->subindicators()->count();
+        return Indicator::all()->map(function ($indicator) use ($max, $term) {
+            $count = $this->subindicators()
+                ->where('academic_term_id', $term->id)
+                ->where('indicator_id', $indicator->id)
+                ->count();
+
+            $total = $indicator
+                ->subindicators()
+                ->count();
 
             $transformed = $count / $total * $max;
 

@@ -20,4 +20,14 @@ class SubIndicator extends Model
     {
         return $this->belongsToMany(Student::class, 'student_sub_indicators');
     }
+
+    public function academicTerms()
+    {
+        return $this->belongsToMany(AcademicTerm::class, 'student_sub_indicators');
+    }
+
+    public function studentSubIndicators()
+    {
+        return $this->hasMany(StudentSubIndicator::class);
+    }
 }

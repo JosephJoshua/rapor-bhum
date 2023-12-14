@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicTerm;
 use App\Models\Student;
 use App\Models\SubIndicator;
 
@@ -10,16 +11,18 @@ class StudentSubIndicatorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Student $student, SubIndicator $subindicator)
+    public function store(AcademicTerm $academicTerm, Student $student, SubIndicator $subindicator)
     {
-        $student->subindicators()->attach($subindicator);
+        $student->subindicators()->attach($subindicator, [
+            'academic_term_id' => $academicTerm->id,
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Student $student, SubIndicator $subindicator)
+    public function destroy(AcademicTerm $academicTerm, Student $student, SubIndicator $subindicator)
     {
-        $student->subindicators()->detach($subindicator);
+        $student->subindicators()->wherePivot('academic_term_id', $academicTerm->id)->detach($subindicator);
     }
 }

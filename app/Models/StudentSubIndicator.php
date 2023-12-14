@@ -9,5 +9,20 @@ class StudentSubIndicator extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'sub_indicator_id'];
+    protected $fillable = ['student_id', 'sub_indicator_id', 'academic_term_id'];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function subIndicator()
+    {
+        return $this->belongsTo(SubIndicator::class);
+    }
+
+    public function academicTerm()
+    {
+        return $this->belongsTo(AcademicTerm::class);
+    }
 }

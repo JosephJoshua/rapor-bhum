@@ -48,8 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('indicators', IndicatorController::class)->middleware('can:manage-indicators');
     Route::resource('indicators.subindicators', SubIndicatorController::class)->except(['index'])->middleware('can:manage-indicators');
 
-    Route::post('/students/{student}/subindicators/{subindicator}', [StudentSubIndicatorController::class, 'store'])->name('students.subindicators.store');
-    Route::delete('/students/{student}/subindicators/{subindicator}', [StudentSubIndicatorController::class, 'destroy'])->name('students.subindicators.destroy');
+    Route::post('/academic-terms/{academic_term}/students/{student}/subindicators/{subindicator}', [StudentSubIndicatorController::class, 'store'])->name('academic-terms.students.subindicators.store');
+    Route::delete('/academic-terms/{academic_term}/students/{student}/subindicators/{subindicator}', [StudentSubIndicatorController::class, 'destroy'])->name('academic-terms.students.subindicators.destroy');
 
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index', 'show'])->middleware('can:manage-classes');
     Route::resource('units.school-classes', SchoolClassController::class)->only(['show']);
