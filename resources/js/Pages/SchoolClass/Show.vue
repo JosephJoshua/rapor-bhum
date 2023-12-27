@@ -467,7 +467,9 @@ const getReportCardUrl = (studentId: number) => {
                   <th scope="col" class="px-6 py-3 text-center" rowspan="2">
                     #
                   </th>
+
                   <th scope="col" class="px-6 py-3" rowspan="2">Nama</th>
+                  <th scope="col" class="px-6 py-3" rowspan="2">NIS</th>
 
                   <th
                     v-for="indicator in indicatorsToShow"
@@ -522,6 +524,10 @@ const getReportCardUrl = (studentId: number) => {
                     class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"
                   >
                     {{ student.name }}
+                  </td>
+
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    {{ student.nis }}
                   </td>
 
                   <template

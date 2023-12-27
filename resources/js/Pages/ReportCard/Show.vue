@@ -20,6 +20,7 @@ import { computed } from 'vue';
 import { ref } from 'vue';
 import Popper from 'vue3-popper';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import formatList from '@/utils/format-list';
 
 const props = defineProps<{
   data: WithIndicatorGradeDescriptors<WithSchoolClass<Student>> | null;
@@ -68,21 +69,6 @@ const indicatorGradeDescriptors = computed(() => {
 
 const description = computed(() => {
   if (props.data === null || props.academic_term === null) return '-';
-
-  const formatList = (items: string[]) => {
-    if (items.length === 1) {
-      return items[0];
-    }
-
-    if (items.length === 2) {
-      return items.join(' dan ');
-    }
-
-    return items
-      .slice(0, -1)
-      .join(', ')
-      .concat(` dan ${items.slice(-1)}`);
-  };
 
   const desc: string[] = [];
 
@@ -370,7 +356,7 @@ const print = () => {
 
           <span>Nomor Induk Siswa</span>
           <span>:</span>
-          <span>0075413457</span>
+          <span>{{ data?.nis ?? '-' }}</span>
         </div>
 
         <div class="grid grid-cols-[auto_auto_auto] grid-rows-2 gap-x-2">

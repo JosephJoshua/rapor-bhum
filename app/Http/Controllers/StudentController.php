@@ -33,6 +33,7 @@ class StudentController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'nis' => ['required', 'string', 'numeric'],
         ]);
 
         $schoolClass->students()->create($validated);
@@ -58,9 +59,12 @@ class StudentController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'nis' => ['required', 'string', 'numeric'],
         ]);
 
         $student->name = $validated['name'];
+        $student->nis = $validated['nis'];
+
         $student->save();
 
         return redirect()->route('units.school-classes.show', ['unit' => $unit, 'school_class' => $schoolClass]);

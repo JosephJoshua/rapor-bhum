@@ -17,6 +17,7 @@ const props = defineProps<{
 
 const form = useForm({
   name: props.data.name,
+  nis: props.data.nis,
 });
 
 const submit = () => {
@@ -90,6 +91,21 @@ const submit = () => {
               />
 
               <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="nis" value="Nomor Induk Siswa" />
+
+              <TextInput
+                id="nis"
+                v-model="form.nis"
+                type="text"
+                class="mt-1 block w-full"
+                inputmode="numeric"
+                required
+              />
+
+              <InputError class="mt-2" :message="form.errors.nis" />
             </div>
 
             <div class="flex items-center justify-end mt-4">
