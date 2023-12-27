@@ -12,18 +12,30 @@ use Inertia\Inertia;
 
 class SchoolClassController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(SchoolClass::class, 'school_class');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
+        $isAdmin = $user->role === 'admin';
+
         return Inertia::render('SchoolClass/Index', [
-            'data' => fn () =>
-                SchoolClass::with('unit')
+            'data' => function () use ($user, $isAdmin) {
+                return SchoolClass::with('unit')
                     ->with('teacher')
+                    ->when(!$isAdmin, function ($query) use ($user) {
+                        $query->where('teacher_user_id', $user->id);
+                    })
                     ->get()
                     ->sortBy('unit.name')
-                    ->sortBy('name'),
+                    ->sortBy('name');
+            }
         ]);
     }
 

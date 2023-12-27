@@ -9,5 +9,5 @@ class GradeDescriptor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'code', 'min_grade', 'max_grade'];
+    protected $fillable = ['name', 'code', 'min_grade', 'max_grade', 'description_prefix'];
 }

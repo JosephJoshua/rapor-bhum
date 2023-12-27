@@ -6,6 +6,7 @@ export type GradeDescriptor = {
   code: string;
   min_grade: number;
   max_grade: number;
+  description_prefix: string;
   created_at: Date;
   updated_at: Date;
 };

@@ -25,8 +25,6 @@ const props = defineProps<{
   academic_terms: AcademicTerm[];
 }>();
 
-console.log(props.students);
-
 const isLoadingToastOpen = ref(false);
 
 const openLoadingToast = () => {
@@ -212,6 +210,13 @@ const handleDeleteStudent = async (id: number) => {
   );
 
   router.reload({ only: ['students'] });
+};
+
+const getReportCardUrl = (studentId: number) => {
+  const url = new URL(route('report-card'));
+  url.searchParams.append('student_id', studentId.toString());
+
+  return url.href;
 };
 </script>
 
@@ -567,8 +572,15 @@ const handleDeleteStudent = async (id: number) => {
                   </template>
 
                   <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
+                    class="px-6 py-4 text-right flex justify-end items-center gap-2 whitespace-nowrap"
                   >
+                    <Link
+                      :href="getReportCardUrl(student.id)"
+                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                      Lihat Rapor
+                    </Link>
+
                     <Link
                       :href="
                         route('units.school-classes.students.edit', {

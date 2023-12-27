@@ -40,6 +40,7 @@ class GradeDescriptorController extends Controller
             'code' => ['required', 'string', 'max:10', 'unique:grade_descriptors'],
             'min_grade' => ['required', 'integer', 'min:0', 'unique:grade_descriptors'],
             'max_grade' => ['required', 'integer', 'min:0', 'gte:min_grade'],
+            'description_prefix' => ['required', 'string', 'max:255'],
         ]);
 
         GradeDescriptor::create($validated);
@@ -66,12 +67,14 @@ class GradeDescriptorController extends Controller
             'code' => ['required', 'string', 'max:10', 'unique:grade_descriptors,code,' . $gradeDescriptor->id],
             'min_grade' => ['required', 'integer', 'min:0', 'unique:grade_descriptors,min_grade,' . $gradeDescriptor->id],
             'max_grade' => ['required', 'integer', 'min:0', 'gte:min_grade'],
+            'description_prefix' => ['required', 'string', 'max:255'],
         ]);
 
         $gradeDescriptor->name = $validated['name'];
         $gradeDescriptor->code = $validated['code'];
         $gradeDescriptor->min_grade = $validated['min_grade'];
         $gradeDescriptor->max_grade = $validated['max_grade'];
+        $gradeDescriptor->description_prefix = $validated['description_prefix'];
 
         $gradeDescriptor->save();
         return redirect()->route('grade-descriptors.index');

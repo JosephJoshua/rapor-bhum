@@ -1,6 +1,9 @@
 import { AcademicTerm } from '@/types/academic-term';
 
-export const formatYear = (start: number, end: number) => {
+export const formatAcademicYear = <Start extends number, End extends number>(
+  start: Start,
+  end: End,
+): `${Start}/${End}` | `${Start} - ${End}` => {
   if (end - start === 1) {
     return `${start}/${end}`;
   }
@@ -17,5 +20,5 @@ export const formatEntireTerm = (
   end: number,
   term: AcademicTerm['term'],
 ) => {
-  return `${formatYear(start, end)} - ${formatTerm(term)}`;
+  return `${formatAcademicYear(start, end)} - ${formatTerm(term)}`;
 };

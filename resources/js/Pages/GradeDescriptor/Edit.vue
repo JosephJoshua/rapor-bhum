@@ -16,6 +16,7 @@ const form = useForm({
   code: props.data.code,
   min_grade: props.data.min_grade,
   max_grade: props.data.max_grade,
+  description_prefix: props.data.description_prefix,
 });
 
 const submit = () => {
@@ -119,6 +120,22 @@ const submit = () => {
               />
 
               <InputError class="mt-2" :message="form.errors.max_grade" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="description_prefix" value="Prefiks Deskripsi" />
+
+              <TextInput
+                id="description_prefix"
+                v-model="form.description_prefix"
+                class="mt-1 block w-full"
+                required
+              />
+
+              <InputError
+                class="mt-2"
+                :message="form.errors.description_prefix"
+              />
             </div>
 
             <div class="flex items-center justify-end mt-4">

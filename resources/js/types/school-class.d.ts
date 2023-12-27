@@ -7,6 +7,10 @@ export type SchoolClass = {
   updated_at: Date;
 };
 
+export type WithSchoolClass<T> = T & {
+  school_class: SchoolClass;
+};
+
 export type WithSchoolClasses<T> = T & {
   school_classes: SchoolClass[];
 };

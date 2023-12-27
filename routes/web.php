@@ -4,6 +4,7 @@ use App\Http\Controllers\AcademicTermController;
 use App\Http\Controllers\GradeDescriptorController;
 use App\Http\Controllers\IndicatorController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportCardController;
 use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentSubIndicatorController;
@@ -53,10 +54,11 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('units.school-classes', SchoolClassController::class)->except(['index', 'show'])->middleware('can:manage-classes');
     Route::resource('units.school-classes', SchoolClassController::class)->only(['show']);
-
-    Route::resource('units.school-classes.students', StudentController::class)->except(['index']);
+    Route::resource('units.school-classes.students', StudentController::class)->except(['index', 'show']);
 
     Route::resource('academic-terms', AcademicTermController::class)->except(['show'])->middleware('can:manage-academic-terms');
+
+    Route::get('/report-card', [ReportCardController::class, 'show'])->name('report-card');
 });
 
 require __DIR__.'/auth.php';

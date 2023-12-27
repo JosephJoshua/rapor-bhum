@@ -10,12 +10,9 @@ use Inertia\Inertia;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct()
     {
-        //
+        $this->authorizeResource(Student::class, 'student');
     }
 
     /**
@@ -40,14 +37,6 @@ class StudentController extends Controller
 
         $schoolClass->students()->create($validated);
         return redirect()->route('units.school-classes.show', ['unit' => $unit, 'school_class' => $schoolClass]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Student $student)
-    {
-        //
     }
 
     /**

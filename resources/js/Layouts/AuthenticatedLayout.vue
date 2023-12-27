@@ -9,6 +9,10 @@ import filterTruthy from '@/utils/filter-truthy';
 import { Link, usePage } from '@inertiajs/vue3';
 import { reactive } from 'vue';
 
+defineProps<{
+  forceLightContent?: boolean;
+}>();
+
 const showingNavigationDropdown = ref(false);
 
 const {
@@ -44,7 +48,7 @@ const routes = reactive(
       href: route('grade-descriptors.index'),
       active: route().current('grade-descriptors.index'),
     },
-    {
+    auth.user.role === 'admin' && {
       name: 'Daftar Indikator',
       href: route('indicators.index'),
       active:
@@ -78,15 +82,25 @@ const routes = reactive(
         route().current('units.school-classes.students.create') ||
         route().current('units.school-classes.students.edit'),
     },
+    {
+      name: 'Rapor',
+      href: route('report-card'),
+      active: route().current('report-card'),
+    },
   ].filter(filterTruthy),
 );
 </script>
 
 <template>
   <div>
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div
+      :class="[
+        'min-h-screen bg-gray-100',
+        !forceLightContent && 'dark:bg-gray-900',
+      ]"
+    >
       <nav
-        class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700"
+        class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 print:hidden"
       >
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -245,7 +259,10 @@ const routes = reactive(
       </nav>
 
       <!-- Page Heading -->
-      <header v-if="$slots.header" class="bg-white dark:bg-gray-800 shadow">
+      <header
+        v-if="$slots.header"
+        class="bg-white dark:bg-gray-800 shadow print:hidden"
+      >
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <slot name="header" />
         </div>

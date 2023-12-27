@@ -70,6 +70,7 @@ const handleDelete = async (id: number) => {
                   <th scope="col" class="px-6 py-3 text-center">#</th>
                   <th scope="col" class="px-6 py-3">Nama</th>
                   <th scope="col" class="px-6 py-3">Kode</th>
+                  <th scope="col" class="px-6 py-3">Prefiks Deskripsi</th>
                   <th scope="col" class="px-6 py-3 text-center">
                     Skor Minimum
                   </th>
@@ -104,6 +105,10 @@ const handleDelete = async (id: number) => {
                     {{ gradeDescriptor.code }}
                   </td>
 
+                  <td class="px-6 py-4 text-gray-900 dark:text-white">
+                    {{ gradeDescriptor.description_prefix }}
+                  </td>
+
                   <td class="px-6 py-4 text-center">
                     {{ gradeDescriptor.min_grade }}
                   </td>
@@ -117,24 +122,24 @@ const handleDelete = async (id: number) => {
                     {{ gradeToPercentage(gradeDescriptor.max_grade) }}%
                   </td>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
-                  >
-                    <Link
-                      :href="
-                        route('grade-descriptors.edit', {
-                          grade_descriptor: gradeDescriptor.id,
-                        })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Ubah
-                    </Link>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex justify-end items-center gap-2">
+                      <Link
+                        :href="
+                          route('grade-descriptors.edit', {
+                            grade_descriptor: gradeDescriptor.id,
+                          })
+                        "
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Ubah
+                      </Link>
 
-                    <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus predikat ${gradeDescriptor.name}?`"
-                      @delete="() => handleDelete(gradeDescriptor.id)"
-                    />
+                      <DeleteButton
+                        :prompt="`Apakah Anda yakin ingin menghapus predikat ${gradeDescriptor.name}?`"
+                        @delete="() => handleDelete(gradeDescriptor.id)"
+                      />
+                    </div>
                   </td>
                 </tr>
 
