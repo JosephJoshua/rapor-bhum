@@ -5,7 +5,11 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DeleteButton from '@/Components/DeleteButton.vue';
 import axios from 'axios';
 import { AcademicTerm } from '@/types/academic-term';
-import { formatEntireTerm, formatTerm, formatYear } from '@/utils/format-term';
+import {
+  formatAcademicYear,
+  formatEntireTerm,
+  formatTerm,
+} from '@/utils/format-term';
 
 const props = defineProps<{
   data: AcademicTerm[];
@@ -71,7 +75,7 @@ const handleDelete = async (id: number) => {
                   </th>
 
                   <td class="px-6 py-4 text-gray-900 dark:text-white">
-                    {{ formatYear(term.start_year, term.end_year) }}
+                    {{ formatAcademicYear(term.start_year, term.end_year) }}
                   </td>
 
                   <td class="px-6 py-4 text-gray-900 dark:text-white">
