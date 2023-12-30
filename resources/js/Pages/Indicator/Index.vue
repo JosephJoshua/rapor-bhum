@@ -74,7 +74,7 @@ const handleDelete = async (id: number) => {
                     {{ indicator.name }}
                   </td>
 
-                  <td class="px-6 py-4 text-gray-900 dark:text-white">
+                  <td class="px-6 py-4">
                     {{
                       indicator.subindicators.length === 0
                         ? '-'
