@@ -39,17 +39,18 @@ const updatePassword = () => {
   <section>
     <header>
       <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-        Update Password
+        Ubah Password
       </h2>
 
       <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-        Ensure your account is using a long, random password to stay secure.
+        Pastikan Anda menggunakan password yang panjang dan tidak mudah ditebak
+        agar akun Anda tetap aman.
       </p>
     </header>
 
     <form class="mt-6 space-y-6" @submit.prevent="updatePassword">
       <div>
-        <InputLabel for="current_password" value="Current Password" />
+        <InputLabel for="current_password" value="Password Lama" />
 
         <TextInput
           id="current_password"
@@ -64,7 +65,7 @@ const updatePassword = () => {
       </div>
 
       <div>
-        <InputLabel for="password" value="New Password" />
+        <InputLabel for="password" value="Password Baru" />
 
         <TextInput
           id="password"
@@ -79,7 +80,10 @@ const updatePassword = () => {
       </div>
 
       <div>
-        <InputLabel for="password_confirmation" value="Confirm Password" />
+        <InputLabel
+          for="password_confirmation"
+          value="Konfirmasi Password Baru"
+        />
 
         <TextInput
           id="password_confirmation"
@@ -93,7 +97,7 @@ const updatePassword = () => {
       </div>
 
       <div class="flex items-center gap-4">
-        <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+        <PrimaryButton :disabled="form.processing">Simpan</PrimaryButton>
 
         <Transition
           enter-active-class="transition ease-in-out"
@@ -105,7 +109,7 @@ const updatePassword = () => {
             v-if="form.recentlySuccessful"
             class="text-sm text-gray-600 dark:text-gray-400"
           >
-            Saved.
+            Tersimpan.
           </p>
         </Transition>
       </div>

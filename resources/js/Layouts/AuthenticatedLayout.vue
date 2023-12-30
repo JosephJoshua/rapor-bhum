@@ -158,14 +158,14 @@ const routes = reactive(
 
                   <template #content>
                     <DropdownLink :href="route('profile.edit')">
-                      Profile
+                      Profil
                     </DropdownLink>
                     <DropdownLink
                       :href="route('logout')"
                       method="post"
                       as="button"
                     >
-                      Log Out
+                      Keluar
                     </DropdownLink>
                   </template>
                 </Dropdown>
@@ -244,14 +244,14 @@ const routes = reactive(
 
             <div class="mt-3 space-y-1">
               <ResponsiveNavLink :href="route('profile.edit')">
-                Profile
+                Profil
               </ResponsiveNavLink>
               <ResponsiveNavLink
                 :href="route('logout')"
                 method="post"
                 as="button"
               >
-                Log Out
+                Keluar
               </ResponsiveNavLink>
             </div>
           </div>
