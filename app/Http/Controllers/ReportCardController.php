@@ -65,6 +65,7 @@ class ReportCardController extends Controller
                 GradeDescriptor::orderBy('min_grade', 'asc')
                     ->orderBy('max_grade', 'asc')
                     ->get(),
+            'max_grade' => fn () => GradeDescriptor::max('max_grade') ?? 0,
         ]);
     }
 }

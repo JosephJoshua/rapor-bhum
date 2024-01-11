@@ -35,6 +35,9 @@ const props = defineProps<{
 
   // eslint-disable-next-line vue/prop-name-casing
   grade_descriptors: GradeDescriptor[];
+
+  // eslint-disable-next-line vue/prop-name-casing
+  max_grade: number;
 }>();
 
 const selectedTermId = ref<number | null>(
@@ -116,6 +119,19 @@ const selectStudent = (id: number) => {
 
 const print = () => {
   window.print();
+};
+
+const gradeToPercentage = (grade: number) => {
+  if (props.max_grade === 0 && grade === 0) {
+    return 100;
+  }
+
+  return Math.round((grade / props.max_grade) * 100 * 100) / 100;
+};
+
+const gradePercentageRange = (minGrade: number, maxGrade: number) => {
+  if (minGrade === maxGrade) return `${gradeToPercentage(minGrade)}%`;
+  return `${gradeToPercentage(minGrade)}% - ${gradeToPercentage(maxGrade)}%`;
 };
 </script>
 
@@ -332,23 +348,29 @@ const print = () => {
     </template>
 
     <div class="px-4 py-8 font-serif">
-      <div class="text-center font-bold text-lg">
-        <p class="tracking-wide">SEKOLAH CINTA KASIH TZU CHI CENGKARENG</p>
-        <h1>Laporan Perkembangan Budaya Humanis Peserta Didik</h1>
-        <p>
-          Tahun Pelajaran
-          {{
-            academic_term === null
-              ? '-'
-              : formatAcademicYear(
-                  academic_term.start_year,
-                  academic_term.end_year,
-                )
-          }}
-        </p>
+      <div class="flex justify-between items-center gap-4">
+        <img src="/images/cktc.png" alt="" class="h-[72px] w-auto" />
+
+        <div class="text-center font-bold text-lg">
+          <p class="tracking-wide">SEKOLAH CINTA KASIH TZU CHI CENGKARENG</p>
+          <h1>Laporan Perkembangan Budaya Humanis Peserta Didik</h1>
+          <p>
+            Tahun Pelajaran
+            {{
+              academic_term === null
+                ? '-'
+                : formatAcademicYear(
+                    academic_term.start_year,
+                    academic_term.end_year,
+                  )
+            }}
+          </p>
+        </div>
+
+        <div></div>
       </div>
 
-      <div class="flex justify-between gap-4 mt-4">
+      <div class="flex justify-between gap-4 mt-8">
         <div class="grid grid-cols-[auto_auto_auto] grid-rows-2 gap-x-2">
           <span>Nama</span>
           <span>:</span>
@@ -437,7 +459,24 @@ const print = () => {
         </tbody>
       </table>
 
-      <div class="mt-8">
+      <div class="mt-4">
+        <h2 class="font-bold mb-1">Keterangan</h2>
+        <ul>
+          <li
+            v-for="gradeDescriptor in grade_descriptors"
+            :key="gradeDescriptor.id"
+          >
+            {{ gradeDescriptor.code }}: {{ gradeDescriptor.name }} ({{
+              gradePercentageRange(
+                gradeDescriptor.min_grade,
+                gradeDescriptor.max_grade,
+              )
+            }})
+          </li>
+        </ul>
+      </div>
+
+      <div class="mt-4">
         <h2 class="font-bold mb-1">Deskripsi</h2>
         <p>
           {{ description }}
