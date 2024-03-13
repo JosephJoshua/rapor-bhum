@@ -482,6 +482,21 @@ const gradePercentageRange = (minGrade: number, maxGrade: number) => {
           {{ description }}
         </p>
       </div>
+
+      <div class="mt-4 flex justify-end">
+        <div>
+          <div class="flex items-end gap-2">
+            <p>Kota Jakarta Barat,</p>
+            <div
+              class="h-px w-[192px] border-t border-dotted border-black"
+            ></div>
+          </div>
+
+          <p>Mengetahui,</p>
+
+          <p class="mt-28 h-px w-full border-t border-dotted border-black"></p>
+        </div>
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>
