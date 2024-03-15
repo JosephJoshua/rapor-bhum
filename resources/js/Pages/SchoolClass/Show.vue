@@ -214,6 +214,13 @@ const handleDeleteStudent = async (id: number) => {
 
 const getReportCardUrl = (studentId: number) => {
   const url = new URL(route('report-card'));
+
+  selectedTermId.value &&
+    url.searchParams.append(
+      'academic_term_id',
+      selectedTermId.value.toString(),
+    );
+
   url.searchParams.append('student_id', studentId.toString());
 
   return url.href;
@@ -548,7 +555,7 @@ const getReportCardUrl = (studentId: number) => {
                         "
                         :disabled="selectedTermId === null"
                         type="checkbox"
-                        class="cursor-pointer w-6 h-6 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
+                        class="disabled:cursor-not-allowed cursor-pointer w-6 h-6 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                         @change="
                           (e) =>
                             toggleStudentSubindicator(

@@ -113,18 +113,6 @@ const handleDeleteSubindicator = async (id: number) => {
                     <div class="flex justify-end items-center gap-2">
                       <Link
                         :href="
-                          route('indicators.subindicators.show', {
-                            indicator: data.id,
-                            subindicator: subindicator.id,
-                          })
-                        "
-                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                      >
-                        Lihat
-                      </Link>
-
-                      <Link
-                        :href="
                           route('indicators.subindicators.edit', {
                             indicator: data.id,
                             subindicator: subindicator.id,

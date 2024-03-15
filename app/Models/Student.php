@@ -36,8 +36,11 @@ class Student extends Model
     {
         // can do this with a single query, but it's not worth the effort
         $max = GradeDescriptor::max('max_grade');
+        $unitId = $this->schoolClass->unit->id;
 
-        return Indicator::all()->map(function ($indicator) use ($max, $term) {
+        return Indicator::whereHas('units', function ($query) use ($unitId) {
+            $query->where('units.id', $unitId);
+        })->get()->map(function ($indicator) use ($max, $term) {
             $count = $this->subindicators()
                 ->where('academic_term_id', $term->id)
                 ->where('indicator_id', $indicator->id)
@@ -47,7 +50,11 @@ class Student extends Model
                 ->subindicators()
                 ->count();
 
-            $transformed = $count / $total * $max;
+            if ($total === 0) {
+                $transformed = 0;
+            } else {
+                $transformed = $count / $total * $max;
+            }
 
             $gradeDescriptor = GradeDescriptor::where('min_grade', '<=', ceil($transformed))
                 ->where('max_grade', '>=', floor($transformed))

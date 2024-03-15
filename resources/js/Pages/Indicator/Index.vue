@@ -6,9 +6,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DeleteButton from '@/Components/DeleteButton.vue';
 import axios from 'axios';
 import { WithSubIndicators } from '@/types/subindicator';
+import { WithUnits } from '@/types/unit';
 
 defineProps<{
-  data: WithSubIndicators<Indicator>[];
+  data: WithSubIndicators<WithUnits<Indicator>>[];
 }>();
 
 const handleDelete = async (id: number) => {
@@ -51,6 +52,7 @@ const handleDelete = async (id: number) => {
                   <th scope="col" class="px-6 py-3 text-center">#</th>
                   <th scope="col" class="px-6 py-3">Nama</th>
                   <th scope="col" class="px-6 py-3">Subindikator</th>
+                  <th scope="col" class="px-6 py-3">Unit</th>
                   <th scope="col" class="px-6 py-3">
                     <span class="sr-only">Aksi</span>
                   </th>
@@ -80,6 +82,10 @@ const handleDelete = async (id: number) => {
                         ? '-'
                         : indicator.subindicators.map((s) => s.name).join(', ')
                     }}
+                  </td>
+
+                  <td class="px-6 py-4">
+                    {{ indicator.units.map((u) => u.name).join(', ') }}
                   </td>
 
                   <td

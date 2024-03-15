@@ -97,6 +97,9 @@ class SchoolClassController extends Controller
                     }),
             'indicators' => fn () =>
                 Indicator::with('subindicators')
+                    ->whereHas('units', function ($query) use ($unit) {
+                        $query->where('units.id', $unit->id);
+                    })
                     ->orderBy('name', 'asc')
                     ->get(),
             'academic_terms' => fn () =>

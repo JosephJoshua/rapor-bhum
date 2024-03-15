@@ -8,3 +8,7 @@ export type Unit = {
 export type WithUnit<T> = T & {
   unit: Unit;
 };
+
+export type WithUnits<T> = T & {
+  units: Unit[];
+};

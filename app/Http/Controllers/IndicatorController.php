@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Indicator;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -14,7 +15,7 @@ class IndicatorController extends Controller
     public function index()
     {
         return Inertia::render('Indicator/Index', [
-            'data' => fn () => Indicator::with('subindicators')
+            'data' => fn () => Indicator::with('subindicators', 'units')
                 ->orderBy('name', 'asc')
                 ->get(),
         ]);
@@ -25,7 +26,9 @@ class IndicatorController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Indicator/Create');
+        return Inertia::render('Indicator/Create', [
+            'units' => fn () => Unit::orderBy('name')->get(),
+        ]);
     }
 
     /**
@@ -35,9 +38,13 @@ class IndicatorController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'unit_ids' => ['required', 'array', 'min:1'],
+            'unit_ids.*' => ['numeric', 'exists:units,id'],
         ]);
 
-        $indicator = Indicator::create($validated);
+        $indicator = Indicator::create(['name' => $validated['name']]);
+        $indicator->units()->attach($validated['unit_ids']);
+
         return redirect()->route('indicators.show', ['indicator' => $indicator]);
     }
 
@@ -61,7 +68,8 @@ class IndicatorController extends Controller
     public function edit(Indicator $indicator)
     {
         return Inertia::render('Indicator/Edit', [
-            'data' => $indicator,
+            'data' => $indicator->load('units'),
+            'units' => fn () => Unit::orderBy('name')->get(),
         ]);
     }
 
@@ -72,10 +80,14 @@ class IndicatorController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'unit_ids' => ['required', 'array', 'min:1'],
+            'unit_ids.*' => ['numeric', 'exists:units,id'],
         ]);
 
         $indicator->name = $validated['name'];
         $indicator->save();
+
+        $indicator->units()->sync($validated['unit_ids']);
 
         return redirect()->route('indicators.show', ['indicator' => $indicator]);
     }

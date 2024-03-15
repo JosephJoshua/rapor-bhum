@@ -26,7 +26,7 @@ class ReportCardController extends Controller
         $student = null;
 
         if ($studentId !== null) {
-            $student = Student::with('schoolClass')
+            $student = Student::with('schoolClass', 'schoolClass.unit')
                 ->when(!$isAdmin, function ($query) use ($user) {
                     $query->whereRelation('schoolClass', 'teacher_user_id', $user->id);
                 })
@@ -59,6 +59,10 @@ class ReportCardController extends Controller
             },
             'indicators' => fn () =>
                 Indicator::with('subindicators')
+                    ->whereHas('units', function ($query) use ($student) {
+                        if ($student == null) return;
+                        $query->where('units.id', $student->schoolClass->unit->id);
+                    })
                     ->orderBy('name', 'asc')
                     ->get(),
             'grade_descriptors' => fn () =>

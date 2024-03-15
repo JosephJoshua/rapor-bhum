@@ -15,4 +15,9 @@ class Unit extends Model
     {
         return $this->hasMany(SchoolClass::class);
     }
+
+    public function indicators()
+    {
+        return $this->belongsToMany(Indicator::class, 'unit_indicators');
+    }
 }

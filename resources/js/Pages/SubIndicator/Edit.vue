@@ -67,7 +67,7 @@ const submit = () => {
         >
           <form @submit.prevent="submit">
             <div>
-              <InputLabel for="name" value="Nama Unit" />
+              <InputLabel for="name" value="Nama Subindikator" />
 
               <TextInput
                 id="name"

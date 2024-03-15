@@ -15,4 +15,9 @@ class Indicator extends Model
     {
         return $this->hasMany(SubIndicator::class)->orderBy('name', 'asc');
     }
+
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class, 'unit_indicators');
+    }
 }

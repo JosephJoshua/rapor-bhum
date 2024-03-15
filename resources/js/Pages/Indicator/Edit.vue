@@ -1,19 +1,41 @@
 <script setup lang="ts">
+import Combobox from '@/Components/Combobox.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Indicator } from '@/types/indicator';
+import { Unit, WithUnits } from '@/types/unit';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 const props = defineProps<{
-  data: Indicator;
+  units: Unit[];
+  data: WithUnits<Indicator>;
 }>();
 
-const form = useForm({
+const form = useForm<{
+  name: string;
+  unit_ids: number[];
+}>({
   name: props.data.name,
+  unit_ids: props.data.units.map((u) => u.id),
 });
+
+const selectedUnit = ref<string | undefined>(undefined);
+
+const handleAddUnit = () => {
+  if (!selectedUnit.value) return;
+
+  form.unit_ids.push(Number(selectedUnit.value));
+  selectedUnit.value = undefined;
+};
+
+const handleDeleteUnit = (unitId: number) => {
+  form.unit_ids = form.unit_ids.filter((id) => id !== unitId);
+};
 
 const submit = () => {
   form.put(route('indicators.update', { indicator: props.data.id }));
@@ -58,7 +80,7 @@ const submit = () => {
         >
           <form @submit.prevent="submit">
             <div>
-              <InputLabel for="name" value="Nama Unit" />
+              <InputLabel for="name" value="Nama Indikator" />
 
               <TextInput
                 id="name"
@@ -70,6 +92,55 @@ const submit = () => {
               />
 
               <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="unit_ids" value="Unit" />
+
+              <div class="flex items-stretch gap-2 mt-1">
+                <Combobox id="unit_ids" v-model="selectedUnit" class="flex-1">
+                  <option v-for="unit in units" :key="unit.id" :value="unit.id">
+                    {{ unit.name }}
+                  </option>
+                </Combobox>
+
+                <SecondaryButton @click="handleAddUnit">+</SecondaryButton>
+              </div>
+
+              <ul class="mt-4 flex flex-wrap gap-2">
+                <li
+                  v-for="unitId in form.unit_ids"
+                  :key="unitId"
+                  class="bg-gray-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+                >
+                  <div>
+                    {{ units.find((unit) => unit.id === unitId)?.name }}
+                  </div>
+
+                  <button
+                    type="button"
+                    class="hover:bg-white/10 transition-colors duration-200 rounded-full p-1"
+                    @click="() => handleDeleteUnit(unitId)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-4 h-4"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18 18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+
+              <InputError class="mt-2" :message="form.errors.unit_ids" />
             </div>
 
             <div class="flex items-center justify-end mt-4">
