@@ -88,31 +88,33 @@ const handleDelete = async (id: number) => {
                     {{ indicator.units.map((u) => u.name).join(', ') }}
                   </td>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
-                  >
-                    <Link
-                      :href="
-                        route('indicators.show', { indicator: indicator.id })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
                     >
-                      Lihat
-                    </Link>
+                      <Link
+                        :href="
+                          route('indicators.show', { indicator: indicator.id })
+                        "
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Lihat
+                      </Link>
 
-                    <Link
-                      :href="
-                        route('indicators.edit', { indicator: indicator.id })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Ubah
-                    </Link>
+                      <Link
+                        :href="
+                          route('indicators.edit', { indicator: indicator.id })
+                        "
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Ubah
+                      </Link>
 
-                    <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus indikator ${indicator.name}?`"
-                      @delete="() => handleDelete(indicator.id)"
-                    />
+                      <DeleteButton
+                        :prompt="`Apakah Anda yakin ingin menghapus indikator ${indicator.name}?`"
+                        @delete="() => handleDelete(indicator.id)"
+                      />
+                    </div>
                   </td>
                 </tr>
 

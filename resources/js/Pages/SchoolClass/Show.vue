@@ -584,33 +584,35 @@ const getReportCardUrl = (studentId: number) => {
                     </td>
                   </template>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2 whitespace-nowrap"
-                  >
-                    <Link
-                      :href="getReportCardUrl(student.id)"
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
                     >
-                      Lihat Rapor
-                    </Link>
+                      <Link
+                        :href="getReportCardUrl(student.id)"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Lihat Rapor
+                      </Link>
 
-                    <Link
-                      :href="
-                        route('units.school-classes.students.edit', {
-                          school_class: data.id,
-                          student: student.id,
-                          unit: unit.id,
-                        })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Ubah
-                    </Link>
+                      <Link
+                        :href="
+                          route('units.school-classes.students.edit', {
+                            school_class: data.id,
+                            student: student.id,
+                            unit: unit.id,
+                          })
+                        "
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Ubah
+                      </Link>
 
-                    <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus murid ${student.name}?`"
-                      @delete="() => handleDeleteStudent(student.id)"
-                    />
+                      <DeleteButton
+                        :prompt="`Apakah Anda yakin ingin menghapus murid ${student.name}?`"
+                        @delete="() => handleDeleteStudent(student.id)"
+                      />
+                    </div>
                   </td>
                 </tr>
 

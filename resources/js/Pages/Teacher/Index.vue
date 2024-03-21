@@ -87,20 +87,22 @@ const handleDelete = async (id: number) => {
                     }}
                   </td>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
-                  >
-                    <Link
-                      :href="route('teachers.edit', { teacher: teacher.id })"
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
                     >
-                      Ubah
-                    </Link>
+                      <Link
+                        :href="route('teachers.edit', { teacher: teacher.id })"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Ubah
+                      </Link>
 
-                    <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus guru ${teacher.name}? Ini akan mempengaruhi data lain seperti kelas yang terkait dengan guru ini.`"
-                      @delete="() => handleDelete(teacher.id)"
-                    />
+                      <DeleteButton
+                        :prompt="`Apakah Anda yakin ingin menghapus guru ${teacher.name}? Ini akan mempengaruhi data lain seperti kelas yang terkait dengan guru ini.`"
+                        @delete="() => handleDelete(teacher.id)"
+                      />
+                    </div>
                   </td>
                 </tr>
 

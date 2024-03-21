@@ -82,26 +82,30 @@ const handleDelete = async (id: number) => {
                     {{ formatTerm(term.term) }}
                   </td>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
-                  >
-                    <Link
-                      :href="
-                        route('academic-terms.edit', { academic_term: term.id })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
                     >
-                      Ubah
-                    </Link>
+                      <Link
+                        :href="
+                          route('academic-terms.edit', {
+                            academic_term: term.id,
+                          })
+                        "
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Ubah
+                      </Link>
 
-                    <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus semester ${formatEntireTerm(
-                        term.start_year,
-                        term.end_year,
-                        term.term,
-                      )}?`"
-                      @delete="() => handleDelete(term.id)"
-                    />
+                      <DeleteButton
+                        :prompt="`Apakah Anda yakin ingin menghapus semester ${formatEntireTerm(
+                          term.start_year,
+                          term.end_year,
+                          term.term,
+                        )}?`"
+                        @delete="() => handleDelete(term.id)"
+                      />
+                    </div>
                   </td>
                 </tr>
 

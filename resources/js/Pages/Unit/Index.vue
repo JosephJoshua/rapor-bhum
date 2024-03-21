@@ -72,27 +72,29 @@ const handleDelete = async (id: number) => {
                     {{ unit.name }}
                   </td>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
-                  >
-                    <Link
-                      :href="route('units.show', { unit: unit.id })"
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
                     >
-                      Lihat
-                    </Link>
+                      <Link
+                        :href="route('units.show', { unit: unit.id })"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Lihat
+                      </Link>
 
-                    <Link
-                      :href="route('units.edit', { unit: unit.id })"
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                    >
-                      Ubah
-                    </Link>
+                      <Link
+                        :href="route('units.edit', { unit: unit.id })"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Ubah
+                      </Link>
 
-                    <DeleteButton
-                      :prompt="`Apakah Anda yakin ingin menghapus unit ${unit.name}?`"
-                      @delete="() => handleDelete(unit.id)"
-                    />
+                      <DeleteButton
+                        :prompt="`Apakah Anda yakin ingin menghapus unit ${unit.name}?`"
+                        @delete="() => handleDelete(unit.id)"
+                      />
+                    </div>
                   </td>
                 </tr>
 

@@ -70,20 +70,22 @@ defineProps<{
                     {{ schoolClass.teacher?.name ?? '-' }}
                   </td>
 
-                  <td
-                    class="px-6 py-4 text-right flex justify-end items-center gap-2"
-                  >
-                    <Link
-                      :href="
-                        route('units.school-classes.show', {
-                          unit: schoolClass.unit.id,
-                          school_class: schoolClass.id,
-                        })
-                      "
-                      class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
                     >
-                      Lihat
-                    </Link>
+                      <Link
+                        :href="
+                          route('units.school-classes.show', {
+                            unit: schoolClass.unit.id,
+                            school_class: schoolClass.id,
+                          })
+                        "
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        Lihat
+                      </Link>
+                    </div>
                   </td>
                 </tr>
 

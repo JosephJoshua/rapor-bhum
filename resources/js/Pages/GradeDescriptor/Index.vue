@@ -122,8 +122,10 @@ const handleDelete = async (id: number) => {
                     {{ gradeToPercentage(gradeDescriptor.max_grade) }}%
                   </td>
 
-                  <td class="px-6 py-4 text-right">
-                    <div class="flex justify-end items-center gap-2">
+                  <td>
+                    <div
+                      class="px-6 py-4 text-right flex justify-end items-center gap-2"
+                    >
                       <Link
                         :href="
                           route('grade-descriptors.edit', {
