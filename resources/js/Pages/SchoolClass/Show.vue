@@ -265,9 +265,11 @@ const getReportCardUrl = (studentId: number) => {
     </template>
 
     <div class="py-12">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <div
+        class="max-w-7xl mx-auto sm:px-6 lg:px-8 overflow-hidden max-h-[calc(95vh-200px)]"
+      >
         <div
-          class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg px-6 py-4"
+          class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg px-6 py-4 h-full"
         >
           <div class="flex items-center justify-between gap-4 mb-2">
             <h3
@@ -447,7 +449,7 @@ const getReportCardUrl = (studentId: number) => {
 
                         <label
                           :for="`indicator-${indicator.id}`"
-                          class="select-none cursor-pointer w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"
+                          class="select-none cursor-pointer w-full ms-2 text-sm font-medium rounded"
                         >
                           {{ indicator.name }}
                         </label>
@@ -463,27 +465,46 @@ const getReportCardUrl = (studentId: number) => {
             </Popper>
           </div>
 
-          <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <div
+            class="relative overflow-x-auto shadow-md sm:rounded-lg h-[calc(95vh-300px)]"
+          >
             <table
-              class="w-full text-left rtl:text-right text-gray-500 dark:text-gray-400 border-collapse"
+              class="w-full text-left rtl:text-right text-gray-500 dark:text-gray-400 border-collapse relative overflow-y-auto"
             >
               <thead
-                class="text-sm text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                class="text-sm text-gray-700 dark:text-gray-400 [&_th]:bg-gray-50 dark:[&_th]:bg-gray-700"
               >
-                <tr>
-                  <th scope="col" class="px-6 py-3 text-center" rowspan="2">
+                <tr class="[&>th]:sticky [&>th]:top-0">
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-center whitespace-nowrap"
+                    rowspan="2"
+                  >
                     #
                   </th>
 
-                  <th scope="col" class="px-6 py-3" rowspan="2">Nama</th>
-                  <th scope="col" class="px-6 py-3" rowspan="2">NIS</th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 whitespace-nowrap sticky left-0 z-10"
+                    rowspan="2"
+                  >
+                    Nama
+                  </th>
+
+                  <th
+                    scope="col"
+                    class="px-6 py-3 whitespace-nowrap"
+                    rowspan="2"
+                  >
+                    NIS
+                  </th>
 
                   <th
                     v-for="indicator in indicatorsToShow"
                     :key="indicator.id"
                     :colspan="indicator.subindicators.length + 1"
                     scope="colgroup"
-                    class="px-6 pt-3 pb-1 text-center"
+                    class="px-6 pt-3 pb-1 text-center text-gray-900 dark:text-gray-200 whitespace-nowrap"
                   >
                     {{ indicator.name }}
                   </th>
@@ -493,7 +514,7 @@ const getReportCardUrl = (studentId: number) => {
                   </th>
                 </tr>
 
-                <tr scope="col">
+                <tr scope="col" class="[&>th]:sticky [&>th]:top-9">
                   <template
                     v-for="indicator in indicatorsToShow"
                     :key="indicator.id"
@@ -518,7 +539,7 @@ const getReportCardUrl = (studentId: number) => {
                 <tr
                   v-for="(student, index) in students"
                   :key="student.id"
-                  class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
+                  class="group odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700"
                 >
                   <th
                     scope="row"
@@ -528,7 +549,7 @@ const getReportCardUrl = (studentId: number) => {
                   </th>
 
                   <td
-                    class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white"
+                    class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white sticky left-0 group-odd:bg-white group-odd:dark:bg-gray-900 group-even:bg-gray-50 group-even:dark:bg-gray-800"
                   >
                     {{ student.name }}
                   </td>
@@ -590,7 +611,7 @@ const getReportCardUrl = (studentId: number) => {
                     >
                       <Link
                         :href="getReportCardUrl(student.id)"
-                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline whitespace-nowrap"
                       >
                         Lihat Rapor
                       </Link>
@@ -603,7 +624,7 @@ const getReportCardUrl = (studentId: number) => {
                             unit: unit.id,
                           })
                         "
-                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline whitespace-nowrap"
                       >
                         Ubah
                       </Link>
