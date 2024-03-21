@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('unit_indicators', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('unit_id');
-            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('indicator_id');
-            $table->foreign('indicator_id')->references('id')->on('indicators')->onDelete('cascade');
+            $table->foreign('indicator_id')->references('id')->on('indicators')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

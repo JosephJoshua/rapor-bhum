@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('indicator_id');
-            $table->foreign('indicator_id')->references('id')->on('indicators');
+            $table->foreign('indicator_id')->references('id')->on('indicators')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

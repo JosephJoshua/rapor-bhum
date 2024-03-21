@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('student_sub_indicators', function (Blueprint $table) {
             $table->unsignedBigInteger('academic_term_id');
-            $table->foreign('academic_term_id')->references('id')->on('academic_terms');
+            $table->foreign('academic_term_id')->references('id')->on('academic_terms')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

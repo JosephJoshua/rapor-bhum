@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('student_sub_indicators', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id');
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('sub_indicator_id');
-            $table->foreign('sub_indicator_id')->references('id')->on('sub_indicators');
+            $table->foreign('sub_indicator_id')->references('id')->on('sub_indicators')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

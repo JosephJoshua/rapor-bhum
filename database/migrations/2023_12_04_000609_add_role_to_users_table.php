@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum('role', ['admin', 'teacher']);
 
             $table->unsignedBigInteger('teacher_details_id')->nullable();
-            $table->foreign('teacher_details_id')->references('id')->on('teacher_details');
+            $table->foreign('teacher_details_id')->references('id')->on('teacher_details')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
