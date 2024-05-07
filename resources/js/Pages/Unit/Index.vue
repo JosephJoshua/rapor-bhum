@@ -49,6 +49,7 @@ const handleDelete = async (id: number) => {
                 <tr>
                   <th scope="col" class="px-6 py-3 text-center">#</th>
                   <th scope="col" class="px-6 py-3">Nama</th>
+                  <th scope="col" class="px-6 py-3">Kepala</th>
                   <th scope="col" class="px-6 py-3">
                     <span class="sr-only">Aksi</span>
                   </th>
@@ -70,6 +71,10 @@ const handleDelete = async (id: number) => {
 
                   <td class="px-6 py-4 text-gray-900 dark:text-white">
                     {{ unit.name }}
+                  </td>
+
+                  <td class="px-6 py-4">
+                    {{ unit.head || '-' }}
                   </td>
 
                   <td>

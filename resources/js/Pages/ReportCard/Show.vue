@@ -6,7 +6,7 @@ import {
   WithIndicatorGradeDescriptors,
 } from '@/types/grade-descriptor';
 import { Indicator } from '@/types/indicator';
-import { WithSchoolClass } from '@/types/school-class';
+import { WithModifiedSchoolClass } from '@/types/school-class';
 import { WithSubIndicators } from '@/types/subindicator';
 import { Student } from '@/types/student';
 import {
@@ -14,16 +14,21 @@ import {
   formatTerm,
   formatAcademicYear,
 } from '@/utils/format-term';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
 import { computed } from 'vue';
 import { ref } from 'vue';
 import Popper from 'vue3-popper';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import formatList from '@/utils/format-list';
+import { WithUnit } from '@/types/unit';
+import { SchoolClass } from '@/types/school-class';
+import { WithTeacher } from '@/types/teacher';
 
 const props = defineProps<{
-  data: WithIndicatorGradeDescriptors<WithSchoolClass<Student>> | null;
+  data: WithIndicatorGradeDescriptors<
+    WithModifiedSchoolClass<Student, WithTeacher<WithUnit<SchoolClass>>>
+  > | null;
   students: Student[];
   indicators: WithSubIndicators<Indicator>[];
 
@@ -39,6 +44,10 @@ const props = defineProps<{
   // eslint-disable-next-line vue/prop-name-casing
   max_grade: number;
 }>();
+
+const {
+  props: { auth },
+} = usePage();
 
 const selectedTermId = ref<number | null>(
   props.academic_term?.id ?? props.academic_terms.at(0)?.id ?? null,
@@ -346,7 +355,7 @@ const gradePercentageRange = (minGrade: number, maxGrade: number) => {
       </div>
     </template>
 
-    <div class="px-4 py-8 font-serif">
+    <div v-if="data" class="px-4 py-8 font-serif">
       <div class="flex justify-between items-center gap-4">
         <img src="/images/cktc.png" alt="" class="h-[72px] w-auto" />
 
@@ -482,7 +491,20 @@ const gradePercentageRange = (minGrade: number, maxGrade: number) => {
         </p>
       </div>
 
-      <div class="mt-4 flex justify-end">
+      <div class="mt-4 flex justify-between items-end gap-4">
+        <div>
+          <p>Mengetahui,</p>
+          <p>
+            {{
+              data?.school_class.unit.head ?? 'Kepala unit ini belum ditentukan'
+            }}
+          </p>
+
+          <p
+            class="mt-28 h-px w-full min-w-[16rem] border-t border-dotted border-black"
+          ></p>
+        </div>
+
         <div>
           <div class="flex items-end gap-2">
             <p>Kota Jakarta Barat,</p>
@@ -491,10 +513,27 @@ const gradePercentageRange = (minGrade: number, maxGrade: number) => {
             ></div>
           </div>
 
-          <p>Mengetahui,</p>
+          <p>
+            {{
+              data?.school_class.teacher?.name ??
+              'Tidak ada guru yang mengajar kelas ini'
+            }}
+          </p>
 
           <p class="mt-28 h-px w-full border-t border-dotted border-black"></p>
         </div>
+      </div>
+    </div>
+
+    <div v-else>
+      <div class="flex justify-center items-center h-[calc(100vh-10rem)]">
+        <p class="max-w-[60ch]">
+          Silakan pilih murid dan semester pada kotak di atas terlebih dahulu,
+          atau kunjungi halaman
+          {{ auth.user.role === 'admin' ? 'Daftar Unit' : 'Daftar Kelas' }}
+          untuk melihat daftar murid, kemudian klik tombol 'Lihat rapor' yang
+          terdapat pada samping nama murid.
+        </p>
       </div>
     </div>
   </AuthenticatedLayout>

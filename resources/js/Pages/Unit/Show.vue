@@ -97,7 +97,7 @@ const handleChangeTeacher = async (
         <h2
           class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight"
         >
-          Unit {{ data.name }}
+          Unit {{ data.name }} {{ data.head ? `(${data.head})` : '' }}
         </h2>
       </div>
     </template>

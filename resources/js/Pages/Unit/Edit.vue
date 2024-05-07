@@ -13,6 +13,7 @@ const props = defineProps<{
 
 const form = useForm({
   name: props.data.name,
+  head: props.data.head,
 });
 
 const submit = () => {
@@ -63,6 +64,21 @@ const submit = () => {
               <TextInput
                 id="name"
                 v-model="form.name"
+                type="text"
+                class="mt-1 block w-full"
+                required
+                autofocus
+              />
+
+              <InputError class="mt-2" :message="form.errors.name" />
+            </div>
+
+            <div class="mt-4">
+              <InputLabel for="head" value="Kepala Unit" />
+
+              <TextInput
+                id="head"
+                v-model="form.head"
                 type="text"
                 class="mt-1 block w-full"
                 required

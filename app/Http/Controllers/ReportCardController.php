@@ -26,7 +26,7 @@ class ReportCardController extends Controller
         $student = null;
 
         if ($studentId !== null) {
-            $student = Student::with('schoolClass', 'schoolClass.unit')
+            $student = Student::with('schoolClass', 'schoolClass.unit', 'schoolClass.teacher')
                 ->when(!$isAdmin, function ($query) use ($user) {
                     $query->whereRelation('schoolClass', 'teacher_user_id', $user->id);
                 })

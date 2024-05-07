@@ -33,7 +33,8 @@ class UnitController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255'],
+            'head' => ['required', 'string', 'max:255'],
         ]);
 
         $unit = Unit::create($validated);
@@ -69,9 +70,12 @@ class UnitController extends Controller
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'head' => ['required', 'string', 'max:255'],
         ]);
 
         $unit->name = $validated['name'];
+        $unit->head = $validated['head'];
+
         $unit->save();
 
         return redirect()->route('units.show', ['unit' => $unit]);
