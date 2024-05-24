@@ -103,6 +103,8 @@ const description = computed(() => {
   return [`Ananda ${props.data.name}`, formatList(desc)].join(' ').concat('.');
 });
 
+const modifiedDescription = ref<string>(description.value);
+
 watch(
   [selectedTermId, selectedStudentId],
   () => {
@@ -117,6 +119,10 @@ watch(
   },
   { immediate: true },
 );
+
+watch(description, (val) => {
+  modifiedDescription.value = val;
+});
 
 const selectTerm = (id: number) => {
   selectedTermId.value = id;
@@ -357,7 +363,16 @@ const gradePercentageRange = (minGrade: number, maxGrade: number) => {
 
     <div v-if="data" class="px-4 py-8 font-serif">
       <div class="flex justify-between items-center gap-4">
-        <img src="/images/cktc.png" alt="" class="h-[72px] w-auto" />
+        <div class="text-center flex flex-col items-center">
+          <img src="/images/cktc.png" alt="" class="h-[48px] w-auto" />
+          <p class="font-medium my-0.5 tracking-[0.2em]">慈濟大愛學校</p>
+          <p class="leading-tight font-bold font-sans text-xs">
+            SEKOLAH CINTA KASIH TZU CHI
+          </p>
+          <p class="leading-tight font-bold font-sans text-xs">
+            {{ data?.school_class?.unit?.name }} - CENGKARENG
+          </p>
+        </div>
 
         <div class="text-center font-bold text-lg">
           <p class="tracking-wide">SEKOLAH CINTA KASIH TZU CHI CENGKARENG</p>
@@ -486,9 +501,13 @@ const gradePercentageRange = (minGrade: number, maxGrade: number) => {
 
       <div class="mt-4">
         <h2 class="font-bold mb-1">Deskripsi</h2>
-        <p>
-          {{ description }}
-        </p>
+
+        <p class="hidden print:block">{{ modifiedDescription }}</p>
+        <textarea
+          v-model="modifiedDescription"
+          name="description"
+          class="print:hidden min-w-full min-h-[64px] border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+        ></textarea>
       </div>
 
       <div class="mt-4 flex justify-between items-end gap-4">
